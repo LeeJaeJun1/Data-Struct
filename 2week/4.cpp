@@ -1,30 +1,43 @@
 #include<iostream>
 using namespace std;
 
-struct node{
+class node{
+private:
     int data;
     node* next;
+public:
+    node() {
+        this->data = 0;
+        this->next = 0;
+    }
+    node(int x) {
+        data = x;
+        next = nullptr;
+    }
+    friend class LinkedList;
 };
 
-class linkedList{
+class LinkedList {
 private:
+    int listSize;
     node* head;
     node* tail;
-    int listSize;
 public:
-    linkedList() {
-        this->head = NULL;
-        this->tail = NULL;
+    LinkedList() {
+        head = NULL;
+        tail = NULL;
         listSize = 0;
     }
+
     bool empty() {
-        if(listSize == 0) {
+        if(listSize==0) {
             return true;
         }
-        else {
+        else{
             return false;
         }
     }
+
     void Print() {
         if(empty()) {
             cout << "empty" << endl;
@@ -37,14 +50,13 @@ public:
         }
         cout << endl;
     }
-    void append(int data) {
-        node* newNode = new node;
-        newNode->data = data;
-        newNode->next = NULL;
+
+    void Append(int x) {
+        node* newNode = new node(x);
         if(empty()) {
             head = tail = newNode;
         }
-        else{
+        else {
             tail->next = newNode;
             tail = newNode;
         }
@@ -54,9 +66,9 @@ public:
     void Delete(int e) {
         node* curNode = head;
         node* preNode = head;
-        for(int k = 0; k < listSize; k++) {
+        for(int i = 0 ; i < listSize; i++) {
             if(curNode->data == e) {
-                if(k==0) {
+                if(i==0) {
                     head = curNode->next;
                 }
                 else{
@@ -71,18 +83,7 @@ public:
         }
     }
 
-    void search(int x) {
-        node* curNode = head;
-        for(int i = 0; i < listSize; i++) {
-            if(curNode->data == x) {
-                cout << i << endl;
-                return;
-            }
-            curNode = curNode->next;
-        }
-    }
-
-    void merge(linkedList* l1, linkedList* l2) {
+    void merge(LinkedList* l1, LinkedList* l2) {
         head = l1->head;
         node* curNode = head;
         while(curNode->next != NULL) {
@@ -93,37 +94,46 @@ public:
             curNode = curNode->next;
         }
         tail = curNode;
+        curNode = head;
         listSize = l1->listSize + l2->listSize;
+    }
+
+    void search(int v) {
+        node* curNode = head;
+        for(int i = 0; i < listSize; i++) {
+            if(curNode->data == v) {
+                cout << i << endl;
+                return;
+            }
+            curNode = curNode->next;
+        }
     }
 };
 
 int main() {
-    int m,n1,n2,num,e,s; cin >> m;
-
-
-    while(m--) {
-        linkedList list1;
-        linkedList list2;
-        linkedList list3;
-
+    int M,e,v;
+    cin >> M;
+    while(M--) {
+        LinkedList l1;
+        LinkedList l2;
+        LinkedList l3;
+        int n1, num1, n2, num2;
         cin >> n1;
         for(int i = 0; i < n1; i++) {
-            cin >> num;
-            list1.append(num);
+            cin >> num1;
+            l1.Append(num1);
         }
         cin >> n2;
         for(int j = 0; j < n2; j++) {
-            cin >> num;
-            list2.append(num);
+            cin >> num2;
+            l2.Append(num2);
         }
-        list3.merge(&list1,&list2);
-        list3.Print();
-
+        l3.merge(&l1, &l2);
+        l3.Print();
         cin >> e;
-        list3.Delete(e);
-        list3.Print();
-
-        cin >> s;
-        list3.search(s);
+        l3.Delete(e);
+        l3.Print();
+        cin >> v;
+        l3.search(v);
     }
 }
