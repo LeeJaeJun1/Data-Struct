@@ -7,48 +7,52 @@ private:
     node* next;
 public:
     node() {
-        this-> data = 0;
+        this->data = 0;
         this->next = 0;
+    }
+    node(int x) {
+        data = x;
+        next = nullptr;
     }
     friend class LinkedList;
 };
 
 class LinkedList {
 private:
+    int listSize;
     node* head;
     node* tail;
-    int linkedSize;
 public:
     LinkedList() {
         head = NULL;
         tail = NULL;
-        linkedSize = 0;
+        listSize = 0;
     }
 
     bool empty() {
-        if(linkedSize == 0) {
+        if(listSize==0) {
             return true;
         }
-        return false;
+        else{
+            return false;
+        }
     }
 
     void Print() {
         if(empty()) {
-            cout << "empty";
+            cout << "empty" << endl;
+            return;
         }
         node* curNode = head;
-        while(curNode!=NULL) {
+        while(curNode != NULL) {
             cout << curNode->data << " ";
             curNode = curNode->next;
         }
         cout << endl;
-        return;
     }
 
     void Append(int x) {
-        node* newNode = new node;
-        newNode->data = x;
-        newNode->next = nullptr;
+        node* newNode = new node(x);
         if(empty()) {
             head = tail = newNode;
         }
@@ -56,53 +60,51 @@ public:
             tail->next = newNode;
             tail = newNode;
         }
-        linkedSize++;
+        listSize++;
         Print();
-        return;
     }
 
-    void Delete(int i) {
-        if(empty() || i >= linkedSize) {
-            cout << -1 << endl;
+    void Delete(int io) {
+        if(empty() || io >= listSize) {
+            cout << "-1" << endl;
             return;
         }
         node* curNode = head;
-        if(i==0) {
-            if(linkedSize == 1) {
+        if(io==0) {
+            if(listSize == 1) {
                 head = tail = nullptr;
             }
-            else{
+            else {
                 head = head->next;
             }
+            cout << curNode->data << endl;
         }
         else{
             node* preNode = head;
-            for(int a = 0; a < i; a++) {
+            for(int j = 0; j < io; j++) {
                 preNode = curNode;
                 curNode = curNode->next;
             }
             preNode->next = curNode->next;
-            if(curNode==tail) {
+            if(curNode == tail) {
                 tail = preNode;
             }
             cout << curNode->data << endl;
             delete curNode;
         }
-        linkedSize--;
+        listSize--;
     }
-
-    void AfterMin(int i) {
-        if(empty() || i >= linkedSize) {
+    void AfterMin(int io) {
+        if(empty() || io>=listSize) {
             cout << "error" << endl;
             return;
         }
         node* curNode = head;
-        for(int k = 0; k < i; k++) {
+        for(int i = 0; i < io; i++) {
             curNode = curNode->next;
         }
         int min = curNode->data;
-        curNode = curNode->next;
-        while(curNode != NULL) {
+        while(curNode!=NULL) {
             if(curNode->data < min) {
                 min = curNode->data;
             }
@@ -110,47 +112,47 @@ public:
         }
         cout << min << endl;
     }
-
     void Sum() {
-        int total = 0;
         if(empty()) {
             cout << "0" << endl;
             return;
         }
+        int total = 0;
         node* curNode = head;
         while(curNode != NULL) {
             total += curNode->data;
             curNode = curNode->next;
         }
         cout << total << endl;
-        return;
     }
 };
 
 int main() {
-    int m; string s;
+    int M; string command;
     LinkedList list;
-    cin >> m;
-    while(m--) {
-        cin >> s;
-        if(s=="Print") {
-            list.Print();
+    cin >> M;
+    while(M--) {
+        cin >> command;
+        if(command == "Append") {
+            int x;
+            cin >> x;
+            list.Append(x);
         }
-        else if(s=="Append") {
+        else if(command == "Delete") {
             int io;
             cin >> io;
-            list.Append(io);
-        }
-        else if(s=="Delete") {
-            int io; cin >> io;
             list.Delete(io);
         }
-        else if(s=="AfterMin") {
-            int io; cin >> io;
+        else if(command == "AfterMin") {
+            int io;
+            cin >> io;
             list.AfterMin(io);
         }
-        else if(s=="Sum") {
+        else if(command == "Sum") {
             list.Sum();
+        }
+        else if(command == "Print") {
+            list.Print();
         }
     }
 }
