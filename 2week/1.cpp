@@ -1,25 +1,27 @@
 #include<iostream>
-#include<string>
 using namespace std;
-class Node{
+
+class node{
 private:
     int data;
-    Node* next;
-
-private:
-    Node() {
+    node* next;
+public:
+    node() {
         this->data = 0;
         this->next = 0;
+    }
+    node(int x) {
+        data = x;
+        next = nullptr;
     }
     friend class LinkedList;
 };
 
-
 class LinkedList {
 private:
-    Node* head;
-    Node* tail;
     int listSize;
+    node* head;
+    node* tail;
 public:
     LinkedList() {
         head = NULL;
@@ -27,8 +29,8 @@ public:
         listSize = 0;
     }
 
-    bool empty() const {
-        if(listSize == 0) {
+    bool empty() {
+        if(listSize==0) {
             return true;
         }
         else{
@@ -38,56 +40,53 @@ public:
 
     void Print() {
         if(empty()) {
-            cout << "empty";
+            cout << "empty" << endl;
+            return;
         }
-        Node* curNode = head;
+        node* curNode = head;
         while(curNode != NULL) {
             cout << curNode->data << " ";
             curNode = curNode->next;
         }
-        cout << "\n";
-        return;
+        cout << endl;
     }
 
-    void Append(int data) {
-        Node* newNode = new Node;
-        newNode->data = data;
-        newNode->next = nullptr;
+    void Append(int x) {
+        node* newNode = new node(x);
         if(empty()) {
             head = tail = newNode;
         }
-        else{
+        else {
             tail->next = newNode;
             tail = newNode;
         }
         listSize++;
         Print();
-        return;
     }
 
-    void Delete(int i) {
-        if(empty() || i < 0 || i >= listSize) {
+    void Delete(int io) {
+        if(empty() || io >= listSize) {
             cout << "-1" << endl;
             return;
         }
-        Node* curNode = head; // 삭제할 노드
-        if(i==0) {
+        node* curNode = head;
+        if(io==0) {
             if(listSize == 1) {
                 head = tail = nullptr;
             }
-            else{
+            else {
                 head = head->next;
             }
             cout << curNode->data << endl;
         }
         else{
-            Node* preNode = head; // 현재 노드의 이전 노드 추적
-            for(int k = 0; k < i; k++) {
+            node* preNode = head;
+            for(int j = 0; j < io; j++) {
                 preNode = curNode;
                 curNode = curNode->next;
             }
             preNode->next = curNode->next;
-            if(curNode== tail) {
+            if(curNode == tail) {
                 tail = preNode;
             }
             cout << curNode->data << endl;
@@ -95,65 +94,65 @@ public:
         }
         listSize--;
     }
-
-    void AfterMax(int i) {
-        if(empty() || i>=listSize) {
+    void AfterMax(int io) {
+        if(empty() || io>=listSize) {
             cout << "error" << endl;
             return;
         }
-        Node* curNode = head;
-        for(int k = 0; k < i; k++) {
+        node* curNode = head;
+        for(int i = 0; i < io; i++) {
             curNode = curNode->next;
         }
-        int maxVal = curNode->data;
-        curNode = curNode->next;
-        while(curNode != NULL) {
-            if(curNode->data > maxVal) {
-                maxVal = curNode->data;
+        int max = curNode->data;
+        while(curNode!=NULL) {
+            if(curNode->data > max) {
+                max = curNode->data;
             }
             curNode = curNode->next;
         }
-        cout << maxVal << endl;
+        cout << max << endl;
     }
-
     void Sum() {
+        if(empty()) {
+            cout << "0" << endl;
+            return;
+        }
         int total = 0;
-        Node* curNode = head;
-        while(curNode!= NULL) {
+        node* curNode = head;
+        while(curNode != NULL) {
             total += curNode->data;
             curNode = curNode->next;
         }
-        cout << total << "\n";
+        cout << total << endl;
     }
 };
 
 int main() {
     int M; string command;
-    cin >> M;
     LinkedList list;
-    int data, j;
-
-    for(int i = 0; i < M; i++) {
+    cin >> M;
+    while(M--) {
         cin >> command;
-        if(command == "Print") {
-            list.Print();
-        }
-        else if(command == "Append") {
-            cin >> data;
-            list.Append(data);
+        if(command == "Append") {
+            int x;
+            cin >> x;
+            list.Append(x);
         }
         else if(command == "Delete") {
-            cin >> j;
-            list.Delete(j);
+            int io;
+            cin >> io;
+            list.Delete(io);
         }
         else if(command == "AfterMax") {
-            cin >> j;
-            list.AfterMax(j);
+            int io;
+            cin >> io;
+            list.AfterMax(io);
         }
-        else{
+        else if(command == "Sum") {
             list.Sum();
         }
+        else if(command == "Print") {
+            list.Print();
+        }
     }
-    return 0;
-
 }
