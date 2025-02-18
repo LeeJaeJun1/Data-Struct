@@ -1,98 +1,90 @@
-#include <iostream>
-#include <string>
+#include<iostream>
 using namespace std;
 
-struct node {
-    int data;
-    node* next;
-};
-
-class listStack {
-public:
-    listStack();
-    int size();
-    int top();
-    void push(int data);
-    int pop();
+class arrayStack {
 private:
-    node* topNode;
-    int listSize;
+    int capacity;
+    int topIndex;
+    int *arr;
+public:
+    arrayStack(int sz) {
+        capacity = sz;
+        topIndex = -1;
+        arr = new int[capacity];
+    }
+    arrayStack() {
+        capacity = 100;
+        topIndex = -1;
+        arr = new int[capacity];
+    }
+    bool empty() {
+        if(topIndex == -1) {
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
+    int size() {
+        return topIndex + 1;
+    }
+
+    int top() {
+        if(empty()) {
+            return -1;
+        }
+        else{return arr[topIndex];}
+    }
+
+    void push(int x) {
+        if(capacity <= size()) {
+            cout << "FULL" << endl;
+            return;
+        }
+        arr[topIndex+=1] = x;
+    }
+
+    void pop() {
+        if(empty()) {
+            return;
+        }
+        topIndex--;
+    }
 };
-listStack::listStack() {
-    topNode = NULL;
-    listSize = 0;
-}
-
-
-int listStack::size() {
-    return listSize;
-}
-int listStack::top() {
-    return topNode->data;
-}
-void listStack::push(int data) {
-    node* newNode = new node();
-    newNode->data = data;
-    newNode->next = topNode;
-    topNode = newNode;
-    listSize++;
-}
-
-int listStack::pop() {
-    int top = topNode->data;
-    node* curNode = topNode;
-    topNode = topNode->next;
-
-    delete curNode;
-    listSize--;
-    return top;
-}
 
 int main() {
-    int t, n, a, b, x;
-    int k;
-    int ans;
-    string s;
-    listStack lis;
+    int t,K; string s;
     cin >> t;
-
-    while (t--) {
-        cin >> s >> k;
-        for (int j = 0; j < s.length(); j++) {
-            if (s[j] >= '1' && s[j] <= '9') {
-                n = s[j] - '0';
-                lis.push(n);
+    arrayStack a;
+    for(int i = 0 ; i < t; i++) {
+        cin >> s >> K;
+        for(int j = 0; j < s.size(); j++) {
+            if(s[j] >= '1' && s[j] <= '9') {
+                a.push(s[j]-'0');
             }
-            else if (s[j] == '+') {
-                a = lis.pop();
-                b = lis.pop();
-                x = b + a;
-                lis.push(x);
-            }
-            else if (s[j] == '-') {
-                a = lis.pop();
-                b = lis.pop();
-                x = b - a;
-                lis.push(x);
-            }
-            else if (s[j] == '*') {
-                a = lis.pop();
-                b = lis.pop();
-                x = b * a;
-                lis.push(x);
-            }
-            else if (s[j] == '/') {
-                a = lis.pop();
-                b = lis.pop();
-                x = b / a;
-                lis.push(x);
+            else if(s[j] == '*' || s[j] == '+' || s[j] == '-') {
+                int second = a.top();
+                a.pop();
+                int first = a.top();
+                a.pop();
+                if(s[j] == '+') {
+                    a.push(first+second);
+                }
+                if(s[j] == '-') {
+                    a.push(first-second);
+                }
+                if(s[j] == '*') {
+                    a.push(first * second);
+                }
             }
         }
-        ans = lis.pop();
-        if (ans < 0) {
-            ans = -ans;
+        if(a.top() > 0) {
+            cout << a.top() % K << endl;
         }
-        cout << ans % k << '\n';
+        else{
+            cout << -a.top() % K << endl;
+        }
     }
-    return 0;
 }
+
