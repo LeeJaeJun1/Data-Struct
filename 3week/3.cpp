@@ -3,35 +3,33 @@ using namespace std;
 
 class node{
 private:
-    node* next;
     int data;
+    node* next;
 public:
-    node() {
-        this->next = nullptr;
-        data = 0;
+    node(int x) {
+        next = NULL;
+        data = x;
     }
     friend class listStack;
-
 };
 
-class listStack {
+class listStack{
 private:
     node* topNode;
-    int listsize;
+    int listSize;
 public:
     listStack() {
         topNode = NULL;
-        listsize = 0;
+        listSize = 0;
     }
     bool empty() {
-        if(listsize==0) {
+        if(listSize == 0)
             return true;
-        }
         else
             return false;
     }
     int size() {
-        return listsize;
+        return listSize;
     }
     int top() {
         if(empty()) {
@@ -40,72 +38,62 @@ public:
         return topNode->data;
     }
     void push(int x) {
-        node* newNode = new node;
-        newNode->data = x;
+        node* newNode = new node(x);
         if(empty()) {
-            topNode=newNode;
+            topNode = newNode;
         }
         else {
             newNode->next = topNode;
             topNode = newNode;
         }
-        listsize++;
+        listSize++;
     }
     void pop(int s) {
         if(empty()) {
             cout << -1 << endl;
             return;
         }
-        if(s > listsize) {
-            for(int i = 0; i < listsize; i++) {
-                cout << topNode->data << " ";
-                node* curNode = topNode;
-                topNode = topNode->next;
-                delete curNode;
+        for(int i = 0; i < s; i++) {
+            if(empty()) {
+                break;
             }
-            listsize = 0;
-            cout << endl;
+            node* curNode = topNode;
+            cout << topNode->data << " ";
+            topNode = topNode->next;
+            delete curNode;
+            listSize--;
         }
-        else{
-            for(int i = 0; i < s; i++) {
-                cout << topNode->data << " ";
-                node* curNode = topNode;
-                topNode = topNode->next;
-                delete curNode;
-                listsize--;
-            }
-            cout << endl;
-        }
+        cout << endl;
     }
 };
 
 int main() {
-    int n; cin >> n;
-    string s;
-    listStack l1;
+    int n; string s;
+    cin >> n;
+    listStack st;
     while(n--) {
         cin >> s;
-        if(s == "size") {
-            cout << l1.size() << endl;
+        if(s=="size") {
+            cout << st.size() << endl;
         }
         else if(s=="empty") {
-            if(l1.empty()) {
-                cout << "1" << endl;
+            if(st.empty()) {
+                cout << 1 << endl;
             }
             else{
-                cout << "0" << endl;
+                cout << 0 << endl;
             }
         }
         else if(s=="top") {
-            cout << l1.top() << endl;
+            cout << st.top() << endl;
         }
         else if(s=="push") {
             int x; cin >> x;
-            l1.push(x);
+            st.push(x);
         }
         else if(s=="pop") {
-            int S; cin >> S;
-            l1.pop(S);
+            int sw; cin >> sw;
+            st.pop(sw);
         }
     }
 }
