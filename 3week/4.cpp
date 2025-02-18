@@ -3,34 +3,32 @@ using namespace std;
 
 class node{
 private:
+    int data;
     node* next;
-    char data;
 public:
-    node() {
+    node(int x) {
         next = NULL;
-        data = 0;
+        data = x;
     }
     friend class listStack;
 };
 
-class listStack {
+class listStack{
 private:
     node* topNode;
     int listSize;
 public:
-    int maxSize = 0;
+    int maxsize;
     listStack() {
         topNode = NULL;
         listSize = 0;
-        maxSize = 0;
+        maxsize = 0;
     }
     bool empty() {
-        if(listSize == 0) {
+        if(listSize == 0)
             return true;
-        }
-        else{
+        else
             return false;
-        }
     }
     int size() {
         return listSize;
@@ -42,8 +40,7 @@ public:
         return topNode->data;
     }
     void push(char x) {
-        node* newNode = new node;
-        newNode->data = x;
+        node* newNode = new node(x);
         if(empty()) {
             topNode = newNode;
         }
@@ -57,44 +54,46 @@ public:
         if(empty()) {
             return;
         }
-        node* del = topNode;
+        node* curNode = topNode;
         topNode = topNode->next;
-        delete del;
+        delete curNode;
         listSize--;
     }
 };
 
 int main() {
-    int n;
+    int t;
     string s;
-    cin >> n;
-    for (int j = 0; j < n; j++) {
-        listStack l1;
+    cin >> t;
+    while(t--) {
+        listStack ls;
         cin >> s;
-        for (int i = 0; i < s.size(); i++) {
-            if (s[i] >= '1' && s[i] <= '9') {
+        for(int i = 0; i < s.size(); i++) {
+            if(s[i] >= '1' && s[i] <= '9') {
                 cout << s[i];
-            } else if (s[i] == '+' || s[i] == '-') {
-                while (!l1.empty()) {
-                    cout << l1.top();
-                    l1.pop();
-                }
-                l1.push(s[i]);
-            } else if (s[i] == '*') {
-                while (!l1.empty() && l1.top() == '*') {
-                    cout << l1.top();
-                    l1.pop();
-                }
-                l1.push(s[i]);
             }
-            if (l1.size() > l1.maxSize) {
-                l1.maxSize = l1.size();
+            else if(s[i] == '+' || s[i] == '-') {
+                while(!ls.empty()) {
+                    cout << ls.top();
+                    ls.pop();
+                }
+                ls.push(s[i]);
+            }
+            else if(s[i] == '*') {
+                while(!ls.empty() && ls.top() == '*') {
+                    cout << ls.top();
+                    ls.pop();
+                }
+                ls.push(s[i]);
+            }
+            if(ls.size() >ls.maxsize) {
+                ls.maxsize = ls.size();
             }
         }
-        while (!l1.empty()) {
-            cout << l1.top();
-            l1.pop();
+        while(!ls.empty()) {
+            cout << ls.top();
+            ls.pop();
         }
-        cout << " " << l1.maxSize << endl;
+        cout << ' ' << ls.maxsize << endl;
     }
 }
