@@ -3,47 +3,64 @@ using namespace std;
 
 class node{
 public:
-    int data;
     node* next;
-    node(int d) {
-        data = d;
-        next = nullptr;
+    int data;
+    node(int x) {
+        next = NULL;
+        data = x;
     }
 };
 
-class listQueue{
+class listqueue {
 private:
     node* front;
     node* rear;
     int size;
 public:
-    listQueue() {
+    listqueue() {
         front = rear = NULL;
         size = 0;
     }
     bool empty() {
-        if(size==0) {
+        if(size == 0)
             return true;
-        }
-        return false;
+        else
+            return false;
     }
-    int getSize() {
+    int Size() {
         return size;
     }
-    int getfront() {
-        if(empty())
-            return -1;
+    int getFront() {
         return front->data;
     }
-    int getrear() {
-        if(empty())
-            return -1;
-        return rear->data;
+    void frontNsum(int num) {
+        if(empty()) {
+            cout << "Empty" << endl;
+            return;
+        }
+        if(num > Size()) {
+            cout << "error" << endl;
+            return;
+        }
+
+        int total = 0;
+        node* curNode = front;
+        for(int i = 0; i < num; i++) {
+            total += curNode->data;
+            curNode = curNode->next;
+        }
+        cout << total << endl;
     }
-    void enqueue(int v) {
-        node* newNode = new node(v);
+    int Rear() {
+        if(empty()) {
+            cout << "Empty" << endl;
+        }
+        cout << rear->data << endl;
+    }
+    void enqueue(int value) {
+        node* newNode = new node(value);
         if(size == 0) {
-            front=rear=newNode;
+            front = rear = newNode;
         }
         else{
             rear->next = newNode;
@@ -53,83 +70,85 @@ public:
     }
     void dequeue() {
         if(empty()) {
+            cout << "Empty" << endl;
             return;
         }
-        node* del = front;
+        node* curNode = front;
         front = front->next;
-        delete del;
+        delete curNode;
         size--;
     }
-    void plusfront(int n) {
+    void plusFront(int num) {
         if(empty()) {
             return;
         }
-        front->data += n;
+        front->data += num;
     }
 };
 
 int main() {
-    int test, card, num,diff,last;
-    cin >> test;
-    while(test--) {
-        listQueue l1,l2;
-        int score1 = 0; int score2 = 0;
-        cin >> card;
-        for(int i = 0 ; i < card; i++) {
-            cin >> num;
-            l1.enqueue(num);
+    int T,N;
+    cin >> T;
+    while(T--) {
+        listqueue l1,l2;
+        cin >> N;
+        int total1 = 0; int total2 = 0;
+        int x1,y1,diff,last;
+        for(int i = 0; i < N; i++) {
+            cin >> x1;
+            l1.enqueue(x1);
         }
-        for(int i = 0; i < card; i++) {
-            cin >> num;
-            l2.enqueue(num);
+        for(int i = 0; i < N; i++) {
+            cin >> y1;
+            l2.enqueue(y1);
         }
-        for(int i = 1; i <= card; i++) {
-            if(l1.getfront() > l2.getfront()) {
-                score1++;
-                cout << "Round" << i << " " << l1.getfront() << ">" << l2.getfront() << " " <<  score1 << ":" << score2 << endl;
-                diff = l1.getfront() - l2.getfront();
-                l1.dequeue();
-                l2.dequeue();
-                l1.plusfront(diff);
-                if(i==card) {
+        for(int j = 1; j <= N; j++) {
+            if(l1.getFront() > l2.getFront()) {
+                total1++;
+                cout << "Round" << j << " " << l1.getFront() << ">" << l2.getFront()
+                     << " " << total1 << ":" << total2 << endl;
+                diff = l1.getFront() - l2.getFront();
+                l1.dequeue(); l2.dequeue();
+                l1.plusFront(diff);
+                if(j==N) {
                     last = 1;
                 }
             }
-            else if(l2.getfront() > l1.getfront()) {
-                score2++;
-                cout << "Round" << i << " " << l1.getfront() << "<" << l2.getfront() << " " <<score1 << ":" << score2 << endl;
-                diff = l2.getfront() - l1.getfront();
-                l1.dequeue();
-                l2.dequeue();
-                l2.plusfront(diff);
-                if(i==card) {
+            else if(l1.getFront() < l2.getFront()) {
+                total2++;
+                cout << "Round" << j << " " << l1.getFront() << "<" << l2.getFront()
+                     << " " << total1 << ":" << total2 << endl;
+                diff = l2.getFront() - l1.getFront();
+                l1.dequeue(); l2.dequeue();
+                l2.plusFront(diff);
+                if(j==N) {
                     last = 2;
                 }
             }
             else{
-                cout << "Round" << i << " " << l1.getfront() << "=" << l2.getfront() << " " << score1 << ":" << score2 << endl;
-                l1.dequeue();
-                l2.dequeue();
-                if(i==card) {
+                cout << "Round" << j << " " << l1.getFront() << "=" << l2.getFront()
+                     << " " << total1 << ":" << total2 << endl;
+                l1.dequeue(); l2.dequeue();
+                if(j==N) {
                     last = 0;
                 }
             }
         }
-        if(score1 > score2) {
+        if(total1 > total2) {
             cout << "Winner P1" << endl;
         }
-        else if(score2 > score1) {
+        else if(total1 < total2) {
             cout << "Winner P2" << endl;
         }
         else{
-            if(last==0) {
-                cout << "Draw" << endl;
-            }
-            else if(last==1) {
+            if(last==1) {
                 cout << "Winner P1" << endl;
             }
-            else if(last==2) {
-                cout << "Winner p2" << endl;
+            else if(last == 2) {
+                cout << "Winner P2" << endl;
+            }
+            else{
+                cout << "Draw" << endl;
             }
         }
     }
