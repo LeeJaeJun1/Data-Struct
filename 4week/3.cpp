@@ -1,123 +1,113 @@
 #include<iostream>
 using namespace std;
 
-class arrayQueue {
-public:
-    arrayQueue(int capacity);
-    bool isEmpty();
-    int size();
-    int front();
-    void enqueue(int data);
-    void dequeue();
-    void rearNsum(int num);
+class arrayQueue{
 private:
     int* arr;
     int capacity;
-    int frontIndex;
-    int rearIndex;
-    int n;
+    int front;
+    int rear;
+    int size;
+public:
+    arrayQueue(int c) {
+        capacity = c;
+        front = rear = 0;
+        size = 0;
+        arr = new int[capacity];
+    }
+    bool empty() {
+        if(size==0) {
+            return true;
+        }
+        return false;
+    }
+    int Size() {
+        return size;
+    }
+    void full() {
+        if(capacity <= Size()) {
+            cout << "True" << endl;
+        }
+        else{
+            cout << "False" << endl;
+        }
+    }
+    void Front() {
+        if(empty()) {
+            cout << "Empty" << endl;
+        }
+        cout << arr[front] << endl;
+    }
+
+    void rearNsum(int num) {
+        if(empty()) {
+            cout << "Empty" << endl;
+            return;
+        }
+        if(Size() < num) {
+            cout << "error" << endl;
+            return;
+        }
+        int total = 0;
+        for(int i = num; i > 0; i--) {
+            total += arr[(rear-i + capacity) % capacity];
+        }
+        cout << total << endl;
+    }
+
+    void enqueue(int value) {
+        if(capacity <= size) {
+            cout << "Full" << endl;
+            return;
+        }
+        arr[rear] = value;
+        rear = (rear+1) % capacity;
+        size++;
+    }
+
+    void dequeue() {
+        if(empty()) {
+            cout << "Empty" << endl;
+            return;
+        }
+        cout << arr[front] << endl;
+        front = (front+1) % capacity;
+        size--;
+    }
 };
 
-arrayQueue::arrayQueue(int capacity) {
-    this->capacity = capacity;
-    arr = new int[capacity];
-    frontIndex = rearIndex = 0;
-    n = 0;
-}
-
-int arrayQueue::size() {
-    return n;
-}
-
-bool arrayQueue::isEmpty() {
-    return n == 0;
-}
-int arrayQueue::front() {
-    return arr[frontIndex];
-}
-
-void arrayQueue::enqueue(int data) {
-    if(capacity == n) {
-        cout << "Full" << endl;
-        return;
-    }
-    arr[rearIndex] = data;
-    rearIndex = (rearIndex + 1) % capacity;
-    n++;
-}
-
-void arrayQueue::dequeue() {
-    if(isEmpty()) {
-        cout << "Empty" << endl;
-        return;
-    }
-    cout << arr[frontIndex] << endl;
-    frontIndex = (frontIndex+1) % capacity;
-    n--;
-}
-
-void arrayQueue::rearNsum(int num) {
-    int sum = 0;
-    if(isEmpty()) {
-        cout << "Empty\n";
-        return;
-    }
-
-    if(num > n) {
-        cout << "error\n";
-    }
-    else{
-        for(int i = 0; i < num; i++) {
-            sum += arr[(rearIndex + capacity - i -1) % capacity];
-        }
-        cout << sum << endl;
-    }
-}
-
 int main() {
-    int N, T, num,data; cin >> N >> T;
-    string command;
-    arrayQueue arr(N);
+    int N,T; string s;
+    cin >> N >> T;
+    arrayQueue qu(N);
     while(T--) {
-        cin >> command;
-        if(command == "isEmpty") {
-            if(arr.isEmpty()) {
+        cin >> s;
+        if(s=="size") {
+            cout << qu.Size() << endl;
+        }
+        else if(s=="isEmpty") {
+            if(qu.empty()) {
                 cout << "True" << endl;
             }
-            else{
+            else
                 cout << "False" << endl;
-            }
         }
-        else if(command == "size") {
-            cout << arr.size() << endl;
+        else if(s=="full") {
+            qu.full();
         }
-        else if(command == "full") {
-            if(arr.size() == N) {
-                cout << "True" << endl;
-            }
-            else{
-                cout << "False" << endl;
-            }
+        else if(s=="front") {
+            qu.Front();
         }
-        else if(command == "front") {
-            if(arr.isEmpty()) {
-                cout << "Empty" << endl;
-            }
-
-            else{
-                cout << arr.front() << endl;
-            }
+        else if(s=="rearNsum") {
+            int num; cin >> num;
+            qu.rearNsum(num);
         }
-        else if(command == "dequeue") {
-            arr.dequeue();
+        else if(s=="enqueue") {
+            int value; cin >> value;
+            qu.enqueue(value);
         }
-        else if(command == "enqueue") {
-            cin >> data;
-            arr.enqueue(data);
-        }
-        else if(command == "rearNsum") {
-            cin >> num;
-            arr.rearNsum(num);
+        else if(s=="dequeue") {
+            qu.dequeue();
         }
     }
 }
