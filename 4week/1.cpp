@@ -1,133 +1,114 @@
 #include<iostream>
 using namespace std;
 
-struct node{
-    int data;
-    node* next;
-};
-
-class listQueue {
-private:
-    node* frontNode;
-    node* rearNode;
-    int n;
+class node{
 public:
-    listQueue();
-    bool empty();
-    int size();
-    void rear();
-    void enqueue(int data);
-    void dequeue();
-    void frontNsum(int num);
+    node* next;
+    int data;
+    node(int x) {
+        next = NULL;
+        data = x;
+    }
 };
 
-listQueue::listQueue() {
-    frontNode = NULL;
-    rearNode == NULL;
-    n = 0;
-}
+class listqueue {
+private:
+    node* front;
+    node* rear;
+    int size;
+public:
+    listqueue() {
+        front = rear = NULL;
+        size = 0;
+    }
+    bool empty() {
+        if(size == 0)
+            return true;
+        else
+            return false;
+    }
+    int Size() {
+        return size;
+    }
+    void frontNsum(int num) {
+        if(empty()) {
+            cout << "Empty" << endl;
+            return;
+        }
+        if(num > Size()) {
+            cout << "error" << endl;
+            return;
+        }
 
-bool listQueue::empty() {
-    return n == 0;
-}
-
-int listQueue::size() {
-    return n;
-}
-
-void listQueue::rear() {
-    if(empty()) {
-        cout << "Empty" << endl;
-        return;
-    }
-    else {
-        cout << rearNode->data << endl;
-    }
-}
-
-void listQueue::enqueue(int data) {
-    node* newNode = new node;
-    newNode->data = data;
-    newNode->next = NULL;
-    if(empty()) {
-        frontNode = rearNode = newNode;
-    }
-    else{
-        rearNode->next = newNode;
-        rearNode = newNode;
-    }
-    n++;
-}
-
-void listQueue::dequeue() {
-    if(empty()) {
-        cout << "Empty" << endl;
-        return;
-    }
-    node* curNode = frontNode;
-    if(size()==1) {
-        frontNode = rearNode = NULL;
-    }
-    else{
-        frontNode = frontNode->next;
-    }
-    cout << curNode->data << endl;
-    delete curNode;
-    n--;
-    return;
-}
-
-void listQueue::frontNsum(int num) {
-    int sum = 0;
-    if(empty()) {
-        cout << "Empty" << endl;
-    }
-    else if (num < 0) {
-        return;
-    }
-    else if(num > n) {
-        cout << "error" << endl;
-    }
-    else{
-        node* curNode = frontNode;
+        int total = 0;
+        node* curNode = front;
         for(int i = 0; i < num; i++) {
-            sum += curNode->data;
+            total += curNode->data;
             curNode = curNode->next;
         }
-        cout << sum << endl;
+        cout << total << endl;
     }
-}
+    int Rear() {
+        if(empty()) {
+            cout << "Empty" << endl;
+        }
+        cout << rear->data << endl;
+    }
+    void enqueue(int value) {
+        node* newNode = new node(value);
+        if(size == 0) {
+            front = rear = newNode;
+        }
+        else{
+            rear->next = newNode;
+            rear = newNode;
+        }
+        size++;
+    }
+    void dequeue() {
+        if(empty()) {
+            cout << "Empty" << endl;
+            return;
+        }
+        node* curNode = front;
+        cout << front->data << endl;
+        front = front->next;
+        delete curNode;
+        size--;
+    }
+};
 
 int main() {
-    string c;
-    listQueue q;
-    int T, data, n; cin >> T;
-    while(T--) {
-        cin >> c;
-        if(c=="isEmpty") {
-            if(q.empty()) {
+    int t; string s;
+    cin >> t;
+    listqueue qu;
+    while(t--) {
+        cin >> s;
+        if(s=="size") {
+            cout << qu.Size() << endl;
+        }
+        else if(s=="isEmpty") {
+            if(qu.empty()) {
                 cout << "True" << endl;
             }
             else{
                 cout << "False" << endl;
             }
         }
-        else if(c=="size") {
-            cout << q.size() << endl;
+        else if(s=="frontNsum") {
+            int num;
+            cin >> num;
+            qu.frontNsum(num);
         }
-        else if(c == "dequeue") {
-            q.dequeue();
+        else if(s=="rear") {
+            qu.Rear();
         }
-        else if(c=="enqueue") {
-            cin >> data;
-            q.enqueue(data);
+        else if(s=="enqueue") {
+            int value; cin >> value;
+            qu.enqueue(value);
         }
-        else if(c == "frontNsum") {
-            cin >> n;
-            q.frontNsum(n);
-        }
-        else if(c=="rear") {
-            q.rear();
+        else if(s=="dequeue") {
+            qu.dequeue();
         }
     }
 }
