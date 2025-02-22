@@ -3,24 +3,25 @@
 using namespace std;
 
 class node{
-    node* prev;
     node* next;
+    node* prev;
     string data;
-    node(string d) {
-        this->data = d;
-        prev=next=NULL;
+
+    node(string x) {
+        data = x;
+        next = prev = NULL;
     }
-    friend class linkedList;
+    friend class LinkedList;
 };
 
-class linkedList {
+class LinkedList {
 private:
     node* header;
     node* trailer;
     int size;
     node* position;
 public:
-    linkedList() {
+    LinkedList() {
         header = new node(" ");
         trailer = new node(" ");
         size = 0;
@@ -29,11 +30,12 @@ public:
         header->prev = trailer->next = NULL;
         position = header->next;
     }
-    bool emtpy() {
-        return (size==0);
+    bool empty() {
+        return (size == 0);
     }
+
     void up(int x) {
-        if(emtpy()) {
+        if(empty()) {
             return;
         }
         for(int i = 0; i < x; i++) {
@@ -43,40 +45,43 @@ public:
             position = position->prev;
         }
     }
+
     void down(int x) {
-        if(emtpy()) {
+        if(empty()) {
             return;
         }
         for(int i = 0; i < x; i++) {
-            if(position == trailer->prev) {
+            if(position = trailer->prev) {
                 break;
             }
             position = position->next;
         }
     }
+
     void cut() {
-        if(emtpy()) {
+        if(empty()) {
             return;
         }
-        node* del = position;
+        node* curNode = position;
         if(position == trailer->prev) {
-            position = del->prev;
+            position = curNode->prev;
         }
         else{
-            position = del->next;
+            position = curNode->next;
         }
-        del->prev->next = del->next;
-        del->next->prev = del->prev;
-        delete del;
+        curNode->next->prev = curNode->prev;
+        curNode->prev->next = curNode->next;
+        delete curNode;
         size--;
-    };
+    }
+
     void append(string name) {
         node* newNode = new node(name);
-        if(emtpy()) {
+        if(empty()) {
             newNode->next = trailer;
             newNode->prev = header;
             header->next = newNode;
-            trailer->prev = newNode;
+            trailer->prev = header;
         }
         else{
             newNode->next = position->next;
@@ -87,56 +92,56 @@ public:
         position = newNode;
         size++;
     }
+
+    void position_set(int idx) {
+        position = header->next;
+        down(idx);
+    }
+
     void print() {
-        if(size<=0) {
+        if (size <= 0) {
             cout << "And Then There Were None" << endl;
-        }
-        else{
-            node* curNode = header->next;
-            for(int i = 0; i < size; i++) {
+            return;
+        } else {
+            node *curNode = header->next;
+            for (int i = 0; i < size; i++) {
                 cout << curNode->data << " ";
                 curNode = curNode->next;
             }
             cout << endl;
         }
     }
-    void position_location(int idx) {
-        position = header->next;
-        down(idx);
-    }
 };
 
 int main() {
-    int t,n,m,k,idx;
-    string name;
-    string command;
+    int t, n,m,k; string name,command;
     cin >> t;
     while(t--) {
-        linkedList l1;
+        LinkedList l;
         cin >> n >> m >> k;
-        for(int i = 0; i < n; i++) {
+        while(n--) {
             cin >> name;
-            l1.append(name);
+            l.append(name);
         }
-        l1.position_location(k);
-        for(int j = 0; j < m; j++) {
+        l.position_set(k);
+        for(int i = 0; i < m; i++) {
             cin >> command;
             if(command == "up") {
-                cin >> idx;
-                l1.up(idx);
+                int x; cin >> x;
+                l.up(x);
             }
             else if(command == "down") {
-                cin >> idx;
-                l1.down(idx);
+                int x; cin >> x;
+                l.down(x);
             }
-            else if(command == "cut"){
-                l1.cut();
+            else if(command == "cut") {
+                l.cut();
             }
             else if(command == "append") {
                 cin >> name;
-                l1.append(name);
+                l.append(name);
             }
         }
-        l1.print();
+        l.print();
     }
 }
