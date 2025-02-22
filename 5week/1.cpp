@@ -1,123 +1,139 @@
 #include<iostream>
+#include<string>
 using namespace std;
 
-struct node{
+class node{
+    node* next;
+    node* prev;
     int data;
-    node* prev; // 이전 노드
-    node* next; // 다음 노드
+
+    node(int x) {
+        data = x;
+        next = prev = NULL;
+    }
+    friend class LinkedList;
 };
 
-class nodeList{
-public:
-    nodeList();
-    node* begin();
-    bool empty();
-    node* end();
-    void insert(node* pos, int data);
-    void erase(node* pos);
-    void findmultiple(int data);
+class LinkedList {
 private:
     node* header;
     node* trailer;
-    int n;
+    int size;
+public:
+    LinkedList() {
+        header = new node(0);
+        trailer = new node(0);
+        size = 0;
+        header->next = trailer;
+        trailer->prev = header;
+        header->prev = trailer->next = NULL;
+    }
+    bool empty() {
+        if(size == 0) {
+            return true;
+        }
+        return false;
+    }
+
+    void insert(int i, int x) {
+        if(i<0 || i> size) {
+            cout << "out_of_range" << endl;
+            return;
+        }
+        node* curNode = header->next;
+        for(int j = 0; j < i; j++) {
+            curNode = curNode->next;
+        }
+        node* newNode = new node(x);
+        newNode->next = curNode;
+        newNode->prev = curNode->prev;
+        curNode->prev->next = newNode;
+        curNode->prev = newNode;
+        size++;
+    }
+
+    void erase(int i) {
+        if(i < 0 || i >= size) {
+            cout << "out_of_range" << endl;
+            return;
+        }
+        node* curNode = header->next;
+        for(int j = 0; j < i; j++) {
+            curNode = curNode->next;
+        }
+        curNode->prev->next = curNode->next;
+        curNode->next->prev = curNode->prev;
+        delete curNode;
+        size--;
+    }
+
+    void find(int x) {
+        node* curNode = header->next;
+        for(int i = 0; i < size; i++) {
+            if(curNode->data == x) {
+                cout << i << endl;
+                return;
+            }
+            curNode = curNode->next;
+        }
+        cout << "not_found" << endl;
+    }
+
+    void print(int m) {
+        if(empty()) {
+            cout << "empty" << endl;
+            return;
+        }
+
+        if(m==0) {
+            node* curNode = header->next;
+            for(int i = 0; i < size; i++) {
+                cout << curNode->data << " ";
+                curNode = curNode->next;
+            }
+            cout << endl;
+        }
+        else if(m==1) {
+            node* curNode = trailer->prev;
+            for(int i = 0; i < size; i++) {
+                cout << curNode->data << " ";
+                curNode = curNode->prev;
+            }
+            cout << endl;
+        }
+    }
 };
 
-nodeList::nodeList() {
-    header = new node();
-    trailer = new node();
-    header->next = trailer;
-    trailer->prev = header;
-    header->prev = trailer->next = NULL;
-    n = 0;
-}
-
-node *nodeList::begin() {
-    return header->next;
-}
-
-bool nodeList::empty() {
-    return n == 0;
-}
-
-node* nodeList::end() {
-    return trailer;
-}
-
-void nodeList::insert(node *pos, int data) {
-    node* newNode = new node();
-    newNode->data = data;
-    newNode->prev = pos->prev;
-    newNode->next = pos;
-    pos->prev->next = newNode;
-    pos->prev = newNode;
-    n++;
-}
-
-void nodeList::erase(node *pos) {
-    if(empty() || pos == NULL) {
-        cout << "empty" << endl;
-        return;
-    }
-    if(pos == trailer) {
-        return;
-    }
-    pos->prev->next = pos->next;
-    pos->next->prev = pos->prev;
-    delete pos;
-    n--;
-}
-
-void nodeList::findmultiple(int data) {
-    int index = 0;
-    node* current = header->next;
-    bool found = false;
-    while(current != trailer) {
-        if(current->data % data == 0) {
-            cout << index << " ";
-            found = true;
-        }
-        current = current->next;
-        index++;
-    }
-    if(!found)
-        cout << -1;
-    cout << endl;
-}
 int main() {
-    int N,e;
-    nodeList list;
-    node* p = list.begin();
-    string s;
-    cin >> N;
-    while(N--) {
+    int n; string s;
+    LinkedList l;
+    cin >> n;
+    while(n--) {
         cin >> s;
-        if(s == "begin") {
-            list.begin();
-        }
-        else if(s== "end") {
-            list.end();
+        if(s=="empty") {
+            if(l.empty()) {
+                cout << "true" << endl;
+            }
+            else{
+                cout << "false" << endl;
+            }
         }
         else if(s=="insert") {
-            cin >> e;
-            list.insert(p, e);
+            int i,x;
+            cin >> i >> x;
+            l.insert(i,x);
         }
         else if(s=="erase") {
-            list.erase(p);
-            p = list.begin();
+            int i; cin >> i;
+            l.erase(i);
         }
-        else if(s== "nextP") {
-            if(p!=list.end()) {
-                p = p->next;
-            }
+        else if(s=="find") {
+            int x; cin >> x;
+            l.find(x);
         }
-        else if(s == "prevP") {
-            if(p!= list.begin()) {
-                p = p->prev;
-            }
-        }
-        else if(s=="findmultiple") {
-            cin >> e;
-            list.findmultiple(e);
+        else if(s=="print") {
+            int m; cin >> m;
+            l.print(m);
         }
     }
 }
