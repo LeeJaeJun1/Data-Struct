@@ -1,22 +1,21 @@
 #include<iostream>
-#include<vector>
 #include<string>
-
+#include<vector>
 using namespace std;
 
-struct node{
+struct node {
     int data;
     int depth;
     node* parent;
     vector<node*> childList;
     node(int data, node* parent) {
-        this->data = data;
+        this-> data = data;
         this->parent = parent;
         this->depth = parent->depth + 1;
     }
     node(int data, int depth) {
-        this->data = data;
-        this->parent = NULL;
+        this-> data = data;
+        this-> parent = NULL;
         this->depth = depth;
     }
 };
@@ -25,123 +24,130 @@ class Tree{
 private:
     node* root;
     vector<node*> nodeList;
-    node* find(int data) {
-        for(auto i : nodeList) {
-            if(i->data == data) {
+    int find(int data, vector<node*>& list) {
+        for(int i = 0; i < list.size(); i++) {
+            if(list[i]->data == data) {
                 return i;
             }
         }
-        return NULL;
+        return -1;
     }
 public:
     Tree() {
         root = new node(1,0);
         nodeList.push_back(root);
     }
-    void insert(int par, int data) {
-        node* parNode = find(par);
-        node* newNode = find(data);
-        if(parNode==NULL || newNode!=NULL) {
+    // 노드 y를 노드 x의 자식으로 x -> y
+    void insertNode(int x, int y) {
+        int paridx = find(x, nodeList);
+        if(paridx == -1 || find(y,nodeList) != -1) {
             cout << -1 << endl;
             return;
         }
-        newNode = new node(data,parNode);
-        parNode->childList.push_back(newNode);
+        node* par = nodeList[paridx];
+        node* newNode = new node(y, par);
+        par->childList.push_back(newNode);
         nodeList.push_back(newNode);
     }
-    void Delete(int data) {
-        node* delNode = find(data);
-        if(delNode == nullptr) {
+
+    void deleteNode(int x) {
+        int idx = find(x, nodeList);
+        if(idx == -1) {
             cout << -1 << endl;
             return;
         }
-        vector<node*>& child = delNode->parent->childList;
-        for(auto i : delNode->childList) {
-            child.push_back(i);
-            i->parent = delNode->parent;
+        node* del = nodeList[idx];
+        vector<node*>& par_child = del->parent->childList;
+        for(auto i : del->childList) {
+            par_child.push_back(i);
+            i->parent = del->parent;
         }
-        for(int i = 0; i < child.size(); i++) {
-            if(child[i] == delNode) {
-                child.erase(child.begin()+i);
+        for(int i = 0; i < par_child.size(); i++) {
+            if(del == par_child[i]) {
+                par_child.erase(par_child.begin() + i);
                 break;
             }
         }
-        for(int i = 0; i < nodeList.size(); i++) {
-            if(nodeList[i] == delNode) {
-                nodeList.erase(nodeList.begin() + i);
+        for(int j = 0; j < nodeList.size(); j++) {
+            if(del == nodeList[j]) {
+                nodeList.erase(nodeList.begin() + j);
                 break;
             }
         }
-        delete delNode;
+        delete del;
     }
-    void parent(int data) {
-        node* Node = find(data);
-        if(Node == NULL) {
+
+    void Parent(int x) {
+        int idx = find(x, nodeList);
+        if(idx <= 0) {
             cout << -1 << endl;
             return;
         }
-        cout << Node->parent->data << endl;
+        node* printNode = nodeList[idx];
+        cout << printNode->parent->data << endl;
     }
-    void child(int data) {
-        node* Node = find(data);
-        if(Node == NULL || Node->childList.empty()) {
+
+    void Child(int x) {
+        int idx = find(x, nodeList);
+        if(idx == -1 || nodeList[idx]->childList.empty()) {
             cout << -1 << endl;
             return;
         }
-        for(auto i : Node->childList) {
+        node* printNode = nodeList[idx];
+        for(auto i : printNode->childList) {
             cout << i->data << " ";
         }
         cout << endl;
     }
-    void min_maxChild(int data) {
-        node* Node = find(data);
-        if(Node == nullptr || Node->childList.empty()) {
+
+    void min_maxChild(int x) {
+        int idx = find(x, nodeList);
+        if(idx == -1 || nodeList[idx]->childList.empty()) {
             cout << -1 << endl;
             return;
         }
-        else if(Node->childList.size()==1) {
-            cout << Node->childList[0]->data << endl;
-            return;
+        node* printNode = nodeList[idx];
+        if(printNode->childList.size() == 1) {
+            cout << printNode->childList[0]->data << endl;
         }
-        else{
-            int max = 0, min = 10000;
-            for(auto i : Node->childList) {
-                if(i->data > max) {
+        else {
+            int max = 1; int min = 10000;
+            for (auto i: printNode->childList) {
+                if (max < i->data) {
                     max = i->data;
                 }
-                if(i->data < min) {
+                if(min > i->data) {
                     min = i->data;
                 }
             }
-            cout << max - min << endl;
+            cout << max + min << endl;
         }
     }
 };
 
 int main() {
-    int t,x,y;
+    int T,x,y; string s;
     Tree tree;
-    string command;
-    cin >> t;
-    while(t--) {
-        cin >> command;
-        if(command=="insert") {
+    cin >> T;
+    while(T--) {
+        cin >> s;
+        if(s=="insert") {
             cin >> x >> y;
-            tree.insert(x,y);
+            tree.insertNode(x,y);
         }
-        else if(command=="delete") {
+        else if(s=="delete") {
             cin >> x;
-            tree.Delete(x);
+            tree.deleteNode(x);
         }
-        else if(command=="parent") {
+        else if(s=="parent") {
             cin >> x;
-            tree.parent(x);
+            tree.Parent(x);
         }
-        else if(command == "child") {
+        else if(s=="child") {
             cin >> x;
-            tree.child(x);
+            tree.Child(x);
         }
-        else if(command == "min_maxChild") {
+        else if(s=="min_maxChild") {
             cin >> x;
             tree.min_maxChild(x);
         }
