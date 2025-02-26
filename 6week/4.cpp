@@ -1,22 +1,22 @@
 #include<iostream>
-#include<vector>
 #include<string>
+#include<vector>
 using namespace std;
 
-struct node{
+struct node {
     int data;
     int depth;
     node* parent;
     vector<node*> childList;
-    node(int data, int depth) {
-        this->data = data;
-        this->depth = depth;
-        this->parent = NULL;
-    }
     node(int data, node* parent) {
-        this->data=data;
+        this-> data = data;
         this->parent = parent;
-        this->depth = parent->depth+1;
+        this->depth = parent->depth + 1;
+    }
+    node(int data, int depth) {
+        this-> data = data;
+        this-> parent = NULL;
+        this->depth = depth;
     }
 };
 
@@ -24,95 +24,106 @@ class Tree{
 private:
     node* root;
     vector<node*> nodeList;
-    node* find(int value) {
-        for(auto i : nodeList) {
-            if(i->data == value) {
+    int find(int data, vector<node*>& list) {
+        for(int i = 0; i < list.size(); i++) {
+            if(list[i]->data == data) {
                 return i;
             }
         }
-        return NULL;
+        return -1;
     }
 public:
     Tree() {
         root = new node(1,0);
         nodeList.push_back(root);
     }
-    void insert(int par, int data) {
-        node* parNode = find(par);
-        node* newNode = find(data);
-        if(parNode==NULL || newNode != NULL) {
+    // 노드 y를 노드 x의 자식으로 x -> y
+    void insertNode(int x, int y) {
+        int paridx = find(x, nodeList);
+        if(paridx == -1 || find(y,nodeList) != -1) {
             cout << -1 << endl;
             return;
         }
-        newNode = new node(data, parNode);
-        parNode->childList.push_back(newNode);
+        node* par = nodeList[paridx];
+        node* newNode = new node(y, par);
+        par->childList.push_back(newNode);
         nodeList.push_back(newNode);
     }
-    void Delete(int data) {
-        node* delNode = find(data);
-        if(delNode == nullptr) {
+
+    void deleteNode(int x) {
+        int idx = find(x, nodeList);
+        if(idx == -1) {
             cout << -1 << endl;
             return;
         }
-        vector<node*> child = delNode->parent->childList;
-        for(auto i : delNode->childList) {
-            child.push_back(i);
-            i->parent = delNode->parent;
+        node* del = nodeList[idx];
+        vector<node*>& par_child = del->parent->childList;
+        for(auto i : del->childList) {
+            par_child.push_back(i);
+            i->parent = del->parent;
         }
-        for(int i = 0; i < child.size(); i++) {
-            if(child[i] == delNode) {
-                child.erase(child.begin() + i);
+        for(int i = 0; i < par_child.size(); i++) {
+            if(del == par_child[i]) {
+                par_child.erase(par_child.begin() + i);
                 break;
             }
         }
-        for(int i = 0; i < nodeList.size(); i++) {
-            if(nodeList[i] == delNode) {
-                nodeList.erase(nodeList.begin()+i);
+        for(int j = 0; j < nodeList.size(); j++) {
+            if(del == nodeList[j]) {
+                nodeList.erase(nodeList.begin() + j);
                 break;
             }
         }
+        delete del;
     }
-    void parent(int data) {
-        node* Node = find(data);
-        if(Node == nullptr) {
+
+    void Parent(int x) {
+        int idx = find(x, nodeList);
+        if(idx <= 0) {
             cout << -1 << endl;
             return;
         }
-        cout << Node->parent->data << endl;
+        node* printNode = nodeList[idx];
+        cout << printNode->parent->data << endl;
     }
-    void child(int data) {
-        node* Node = find(data);
-        if(Node == nullptr || Node->childList.empty()) {
+
+    void Child(int x) {
+        int idx = find(x, nodeList);
+        if(idx == -1 || nodeList[idx]->childList.empty()) {
             cout << -1 << endl;
             return;
         }
-        for(auto i : Node->childList) {
+        node* printNode = nodeList[idx];
+        for(auto i : printNode->childList) {
             cout << i->data << " ";
         }
         cout << endl;
     }
-    void Depth(int a, int b) {
-        node* A = find(a);
-        node* B = find(b);
-        if(A==nullptr || B==nullptr) {
+
+    void diff(int x, int y) {
+        int idx = find(x, nodeList);
+        int idy = find(y,nodeList);
+        if(idx == -1 || idy ==- 1) {
             cout << "error" << endl;
             return;
         }
-        int total = A->depth + B->depth;
-        cout << A->depth << " " << B->depth << " " << total << endl;
+        node* nx = nodeList[idx]; node* ny = nodeList[idy];
+        int result = nx->depth + ny->depth;
+        cout << nx->depth << " " << ny->depth << " " << result << endl;
     }
+
 };
 
 int main() {
-    int n,m,par,child;
-    cin >> n >> m;
+    int N, M, x, y;
     Tree tree;
-    while(n--) {
-        cin >> par >> child;
-        tree.insert(par,child);
+    cin >> N >> M;
+    while(N--) {
+        cin >> x >> y;
+        tree.insertNode(x,y);
     }
-    while(m--) {
-        cin >> par >> child;
-        tree.Depth(par,child);
+    while(M--) {
+        cin >> x >> y;
+        tree.diff(x,y);
     }
 }
