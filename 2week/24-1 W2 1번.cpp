@@ -171,5 +171,4 @@ int main() {
             list.Sum();
         }
     }
-
 }
