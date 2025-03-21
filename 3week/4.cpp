@@ -1,99 +1,84 @@
 #include<iostream>
 using namespace std;
 
-class node{
+class arrayStack {
 private:
-    int data;
-    node* next;
+    int capacity;
+    int topIndex;
+    int* arr;
 public:
-    node(int x) {
-        next = NULL;
-        data = x;
+    int maxSize;
+    arrayStack(int sz) {
+        capacity = sz;
+        topIndex = -1;
+        arr = new int[capacity];
     }
-    friend class listStack;
-};
-
-class listStack{
-private:
-    node* topNode;
-    int listSize;
-public:
-    int maxsize;
-    listStack() {
-        topNode = NULL;
-        listSize = 0;
-        maxsize = 0;
+    arrayStack() {
+        capacity = 10000;
+        topIndex = -1;
+        arr = new int[capacity];
+        maxSize = 0;
     }
     bool empty() {
-        if(listSize == 0)
-            return true;
-        else
-            return false;
+        return topIndex==-1;
     }
     int size() {
-        return listSize;
+        return topIndex+1;
     }
     char top() {
         if(empty()) {
             return -1;
         }
-        return topNode->data;
+        return arr[topIndex];
     }
     void push(char x) {
-        node* newNode = new node(x);
-        if(empty()) {
-            topNode = newNode;
+        if(size() >= capacity) {
+            cout << "FULL\n";
+            return;
         }
-        else {
-            newNode->next = topNode;
-            topNode = newNode;
-        }
-        listSize++;
+        arr[topIndex+=1] = x;
     }
     void pop() {
         if(empty()) {
             return;
         }
-        node* curNode = topNode;
-        topNode = topNode->next;
-        delete curNode;
-        listSize--;
+        topIndex--;
     }
 };
 
 int main() {
-    int t;
+    int n; cin >> n;
     string s;
-    cin >> t;
-    while(t--) {
-        listStack ls;
+
+    while(n--) {
+        arrayStack sta;
         cin >> s;
         for(int i = 0; i < s.size(); i++) {
             if(s[i] >= '1' && s[i] <= '9') {
                 cout << s[i];
             }
             else if(s[i] == '+' || s[i] == '-') {
-                while(!ls.empty()) {
-                    cout << ls.top();
-                    ls.pop();
+                while(!sta.empty()) {
+                    cout << sta.top();
+                    sta.pop();
                 }
-                ls.push(s[i]);
+                sta.push(s[i]);
             }
-            else if(s[i] == '*') {
-                while(!ls.empty() && ls.top() == '*') {
-                    cout << ls.top();
-                    ls.pop();
+            else if(s[i] == '*' ||s[i] == '/') {
+                while(!sta.empty() && (sta.top() == '*' || sta.top() == '/')) {
+                    cout << sta.top();
+                    sta.pop();
                 }
-                ls.push(s[i]);
+                sta.push(s[i]);
             }
-            if(ls.size() >ls.maxsize) {
-                ls.maxsize = ls.size();
+            if(sta.size() > sta.maxSize) {
+                sta.maxSize = sta.size();
             }
         }
-        while(!ls.empty()) {
-            cout << ls.top();
-            ls.pop();
+        while(!sta.empty()) {
+            cout << sta.top();
+            sta.pop();
         }
-        cout << ' ' << ls.maxsize << endl;
+        cout << " " << sta.maxSize << "\n";
     }
 }
