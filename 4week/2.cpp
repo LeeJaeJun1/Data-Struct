@@ -2,64 +2,43 @@
 using namespace std;
 
 class node{
-public:
-    node* next;
+private:
     int data;
+    node* next;
+public:
     node(int x) {
-        next = NULL;
         data = x;
+        next = NULL;
     }
+    friend class linkedArray;
 };
 
-class listqueue {
+class linkedArray {
 private:
     node* front;
     node* rear;
     int size;
 public:
-    listqueue() {
+    linkedArray() {
         front = rear = NULL;
         size = 0;
     }
-    bool empty() {
-        if(size == 0)
-            return true;
-        else
-            return false;
+    bool isEmpty() {
+        return size == 0;
     }
     int Size() {
         return size;
-    }
-    int getFront() {
-        return front->data;
-    }
-    void frontNsum(int num) {
-        if(empty()) {
-            cout << "Empty" << endl;
+    };
+    void Rear() {
+        if(isEmpty()) {
+            cout << "Empty" << "\n";
             return;
         }
-        if(num > Size()) {
-            cout << "error" << endl;
-            return;
-        }
-
-        int total = 0;
-        node* curNode = front;
-        for(int i = 0; i < num; i++) {
-            total += curNode->data;
-            curNode = curNode->next;
-        }
-        cout << total << endl;
-    }
-    int Rear() {
-        if(empty()) {
-            cout << "Empty" << endl;
-        }
-        cout << rear->data << endl;
+        cout << rear->data << "\n";
     }
     void enqueue(int value) {
         node* newNode = new node(value);
-        if(size == 0) {
+        if(Size()==0) {
             front = rear = newNode;
         }
         else{
@@ -69,86 +48,104 @@ public:
         size++;
     }
     void dequeue() {
-        if(empty()) {
-            cout << "Empty" << endl;
+        if(isEmpty()) {
+            cout << "Empty" << "\n";
             return;
         }
-        node* curNode = front;
+        node* del = front;
         front = front->next;
-        delete curNode;
+        delete del;
         size--;
     }
-    void plusFront(int num) {
-        if(empty()) {
+    void frontNsum(int num) {
+        if(isEmpty()) {
+            cout << "Empty" << "\n";
             return;
         }
-        front->data += num;
+        if(Size() < num) {
+            cout << "error" << "\n";
+            return;
+        }
+        int total = 0;
+        node* curNode = front;
+        while(num--) {
+            total += curNode->data;
+            curNode = curNode->next;
+        }
+        cout << total << "\n";
+    }
+    int Front() {
+        return front->data;
+    }
+    void plus(int di) {
+        if(isEmpty()) {
+            return;
+        }
+        front->data += di;
     }
 };
 
 int main() {
-    int T,N;
-    cin >> T;
-    while(T--) {
-        listqueue l1,l2;
+    int t,N;
+    cin >> t;
+    while(t--) {
+        int n1,n2,diff;
+        int last = 0;
+        int w1 = 0; int w2 = 0;
         cin >> N;
-        int total1 = 0; int total2 = 0;
-        int x1,y1,diff,last;
+        linkedArray l1; linkedArray l2;
         for(int i = 0; i < N; i++) {
-            cin >> x1;
-            l1.enqueue(x1);
+            cin >> n1;
+            l1.enqueue(n1);
         }
         for(int i = 0; i < N; i++) {
-            cin >> y1;
-            l2.enqueue(y1);
+            cin >> n2;
+            l2.enqueue(n2);
         }
-        for(int j = 1; j <= N; j++) {
-            if(l1.getFront() > l2.getFront()) {
-                total1++;
-                cout << "Round" << j << " " << l1.getFront() << ">" << l2.getFront()
-                     << " " << total1 << ":" << total2 << endl;
-                diff = l1.getFront() - l2.getFront();
+        for(int i = 1; i <= N; i++) {
+            if(l1.Front() > l2.Front()) {
+                w1+=1;
+                cout << "Round" << i << " " << l1.Front() << ">" << l2.Front() << " " << w1 << ":" << w2 << "\n";
+                diff = l1.Front() - l2.Front();
                 l1.dequeue(); l2.dequeue();
-                l1.plusFront(diff);
-                if(j==N) {
+                l1.plus(diff);
+                if(i==N) {
                     last = 1;
                 }
             }
-            else if(l1.getFront() < l2.getFront()) {
-                total2++;
-                cout << "Round" << j << " " << l1.getFront() << "<" << l2.getFront()
-                     << " " << total1 << ":" << total2 << endl;
-                diff = l2.getFront() - l1.getFront();
+            else if(l1.Front() < l2.Front()){
+                w2+=1;
+                cout << "Round" << i << " " << l1.Front() << "<" << l2.Front() << " " << w1 << ":" << w2 << "\n";
+                diff = l2.Front() - l1.Front();
                 l1.dequeue(); l2.dequeue();
-                l2.plusFront(diff);
-                if(j==N) {
+                l2.plus(diff);
+                if(i==N) {
                     last = 2;
                 }
             }
-            else{
-                cout << "Round" << j << " " << l1.getFront() << "=" << l2.getFront()
-                     << " " << total1 << ":" << total2 << endl;
+            else {
+                cout << "Round" << i << l1.Front() << "=" << l2.Front() << " " << w1 << ":" << w2 << "\n";
                 l1.dequeue(); l2.dequeue();
-                if(j==N) {
-                    last = 0;
+                if(i==N) {
+                    last = 3;
                 }
             }
         }
-        if(total1 > total2) {
-            cout << "Winner P1" << endl;
+        if(w1 > w2) {
+            cout << "Winner P1" << "\n";
         }
-        else if(total1 < total2) {
-            cout << "Winner P2" << endl;
+        else if(w1 < w2) {
+            cout << "Winner P2" << "\n";
         }
-        else{
-            if(last==1) {
-                cout << "Winner P1" << endl;
+        else {
+            if(last == 1) {
+                cout << "Winner P1" << "\n";
             }
             else if(last == 2) {
-                cout << "Winner P2" << endl;
+                cout << "Winner P2" << "\n";
             }
             else{
-                cout << "Draw" << endl;
+                cout << "Draw" << "\n";
             }
         }
     }
