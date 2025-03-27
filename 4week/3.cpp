@@ -1,78 +1,73 @@
 #include<iostream>
 using namespace std;
 
-class arrayQueue{
+class arrayQueue {
 private:
     int* arr;
-    int capacity;
     int front;
     int rear;
     int size;
+    int capacity;
 public:
-    arrayQueue(int c) {
-        capacity = c;
-        front = rear = 0;
+    arrayQueue(int sz) {
+        front = 0;
+        rear = 0;
         size = 0;
+        capacity = sz;
         arr = new int[capacity];
     }
-    bool empty() {
-        if(size==0) {
-            return true;
-        }
-        return false;
+    bool isEmpty() {
+        return size==0;
     }
     int Size() {
         return size;
     }
     void full() {
         if(capacity <= Size()) {
-            cout << "True" << endl;
+            cout << "True" << "\n";
+            return;
         }
-        else{
-            cout << "False" << endl;
-        }
+        cout << "False" << "\n";
     }
     void Front() {
-        if(empty()) {
-            cout << "Empty" << endl;
-        }
-        cout << arr[front] << endl;
-    }
-
-    void rearNsum(int num) {
-        if(empty()) {
-            cout << "Empty" << endl;
+        if(isEmpty()) {
+            cout << "Empty" << "\n";
             return;
         }
-        if(Size() < num) {
-            cout << "error" << endl;
-            return;
-        }
-        int total = 0;
-        for(int i = num; i > 0; i--) {
-            total += arr[(rear-i + capacity) % capacity];
-        }
-        cout << total << endl;
+        cout << arr[front] << "\n";
     }
-
     void enqueue(int value) {
-        if(capacity <= size) {
-            cout << "Full" << endl;
+        if(capacity <= Size()) {
+            cout << "Full" << "\n";
             return;
         }
         arr[rear] = value;
         rear = (rear+1) % capacity;
         size++;
     }
-
     void dequeue() {
-        if(empty()) {
-            cout << "Empty" << endl;
+        if(isEmpty()) {
+            cout << "Empty" << "\n";
             return;
         }
-        cout << arr[front] << endl;
+        cout << arr[front] << "\n";
         front = (front+1) % capacity;
         size--;
+    }
+    void rearNsum(int num) {
+        if(isEmpty()) {
+            cout << "Empty" << "\n";
+            return;
+        }
+        if(num > Size()) {
+            cout << "error" << "\n";
+            return;
+        }
+        int total = 0;
+        for(int i = num; i > 0; i--) {
+            total += arr[(rear-i+capacity) % capacity];
+        }
+        cout << total << "\n";
     }
 };
 
@@ -86,7 +81,7 @@ int main() {
             cout << qu.Size() << endl;
         }
         else if(s=="isEmpty") {
-            if(qu.empty()) {
+            if(qu.isEmpty()) {
                 cout << "True" << endl;
             }
             else
