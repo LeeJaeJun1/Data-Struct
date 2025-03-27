@@ -2,61 +2,43 @@
 using namespace std;
 
 class node{
-public:
-    node* next;
+private:
     int data;
+    node* next;
+public:
     node(int x) {
-        next = NULL;
         data = x;
+        next = NULL;
     }
+    friend class linkedArray;
 };
 
-class listqueue {
+class linkedArray {
 private:
     node* front;
     node* rear;
     int size;
 public:
-    listqueue() {
+    linkedArray() {
         front = rear = NULL;
         size = 0;
     }
-    bool empty() {
-        if(size == 0)
-            return true;
-        else
-            return false;
+    bool isEmpty() {
+        return size == 0;
     }
     int Size() {
         return size;
-    }
-    void frontNsum(int num) {
-        if(empty()) {
-            cout << "Empty" << endl;
+    };
+    void Rear() {
+        if(isEmpty()) {
+            cout << "Empty" << "\n";
             return;
         }
-        if(num > Size()) {
-            cout << "error" << endl;
-            return;
-        }
-
-        int total = 0;
-        node* curNode = front;
-        for(int i = 0; i < num; i++) {
-            total += curNode->data;
-            curNode = curNode->next;
-        }
-        cout << total << endl;
-    }
-    int Rear() {
-        if(empty()) {
-            cout << "Empty" << endl;
-        }
-        cout << rear->data << endl;
+        cout << rear->data << "\n";
     }
     void enqueue(int value) {
         node* newNode = new node(value);
-        if(size == 0) {
+        if(Size()==0) {
             front = rear = newNode;
         }
         else{
@@ -66,42 +48,57 @@ public:
         size++;
     }
     void dequeue() {
-        if(empty()) {
-            cout << "Empty" << endl;
+        if(isEmpty()) {
+            cout << "Empty" << "\n";
             return;
         }
-        node* curNode = front;
-        cout << front->data << endl;
+        node* del = front;
+        cout << del->data << "\n";
         front = front->next;
-        delete curNode;
+        delete del;
         size--;
+    }
+    void frontNsum(int num) {
+        if(isEmpty()) {
+            cout << "Empty" << "\n";
+            return;
+        }
+        if(Size() < num) {
+            cout << "error" << "\n";
+            return;
+        }
+        int total = 0;
+        while(num--) {
+            total += front->data;
+            front = front->next;
+        }
+        cout << total << "\n";
     }
 };
 
 int main() {
-    int t; string s;
-    cin >> t;
-    listqueue qu;
-    while(t--) {
+    int N; string s;
+    cin >> N;
+    linkedArray qu;
+    while(N--) {
         cin >> s;
         if(s=="size") {
             cout << qu.Size() << endl;
         }
         else if(s=="isEmpty") {
-            if(qu.empty()) {
+            if(qu.isEmpty()) {
                 cout << "True" << endl;
             }
-            else{
+            else
                 cout << "False" << endl;
-            }
         }
-        else if(s=="frontNsum") {
-            int num;
-            cin >> num;
-            qu.frontNsum(num);
-        }
+
         else if(s=="rear") {
             qu.Rear();
+        }
+        else if(s=="frontNsum") {
+            int num; cin >> num;
+            qu.frontNsum(num);
         }
         else if(s=="enqueue") {
             int value; cin >> value;
