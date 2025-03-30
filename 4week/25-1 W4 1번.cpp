@@ -47,10 +47,11 @@ public:
             cout << -1 << "\n";
             return;
         }
+        int total = 0;
         for(int i = front; i < rear; i++) {
-            cout << arr[i] << " ";
+            total += arr[i];
         }
-        cout << "\n";
+        cout << total << "\n";
     }
 };
 
@@ -83,8 +84,8 @@ int main() {
             else if(comm=="pop") {
                 qu.pop();
             }
-            else if(comm=="print_all") {
-                qu.print_all();
+            else if(comm=="print_sum") {
+                qu.print_sum();
             }
         }
     }
