@@ -1,123 +1,115 @@
 #include<iostream>
-#include<string>
 using namespace std;
 
-class node{
-    node* next;
-    node* prev;
+class Node{
+public:
     string data;
+    Node* next;
+    Node* prev;
 
-    node(string x) {
-        data = x;
+    Node(string x) {
+        this->data = x;
         next = prev = NULL;
     }
-    friend class LinkedList;
 };
 
-class LinkedList {
+class doubly{
 private:
-    node* header;
-    node* trailer;
     int size;
-    node* position;
+    Node* head;
+    Node* tail;
+    Node* position;
 public:
-    LinkedList() {
-        header = new node(" ");
-        trailer = new node(" ");
+    doubly() {
+        head = new Node(" ");
+        tail = new Node(" ");
+        head->next = tail;
+        tail->prev = head;
+        head->prev = tail->next = NULL;
         size = 0;
-        header->next = trailer;
-        trailer->prev = header;
-        header->prev = trailer->next = NULL;
-        position = header->next;
     }
     bool empty() {
-        return (size == 0);
+        return size==0;
     }
-
     void up(int x) {
         if(empty()) {
             return;
         }
         for(int i = 0; i < x; i++) {
-            if(position == header->next) {
+            if(position==head->next) {
                 break;
             }
             position = position->prev;
         }
     }
-
     void down(int x) {
         if(empty()) {
             return;
         }
         for(int i = 0; i < x; i++) {
-            if(position = trailer->prev) {
+            if(position==tail->prev) {
                 break;
             }
             position = position->next;
         }
     }
-
     void cut() {
         if(empty()) {
             return;
         }
-        node* curNode = position;
-        if(position == trailer->prev) {
-            position = curNode->prev;
+        Node* delNode = position;
+        if(position==tail) {
+            position = delNode->prev;
         }
         else{
-            position = curNode->next;
+            position = delNode->next;
         }
-        curNode->next->prev = curNode->prev;
-        curNode->prev->next = curNode->next;
-        delete curNode;
+        delNode->prev->next = delNode->next;
+        delNode->next->prev = delNode->prev;
+        delete delNode;
         size--;
     }
-
     void append(string name) {
-        node* newNode = new node(name);
-        if(empty()) {
-            newNode->next = trailer;
-            newNode->prev = header;
-            header->next = newNode;
-            trailer->prev = header;
+        Node* newNode = new Node(name);
+        if(size==0) {
+            newNode->next = tail;
+            newNode->prev = head;
+            head->next = newNode;
+            tail->prev = head;
         }
         else{
             newNode->next = position->next;
-            newNode->prev = position;
             position->next->prev = newNode;
+            newNode->prev = position;
             position->next = newNode;
         }
         position = newNode;
         size++;
     }
-
-    void position_set(int idx) {
-        position = header->next;
-        down(idx);
+    void position_set(int x) {
+        position = head->next;
+        down(x);
     }
-
     void print() {
-        if (size <= 0) {
-            cout << "And Then There Were None" << endl;
+        if(empty()) {
+            cout << "And Then Were None\n";
             return;
-        } else {
-            node *curNode = header->next;
-            for (int i = 0; i < size; i++) {
-                cout << curNode->data << " ";
-                curNode = curNode->next;
-            }
-            cout << endl;
         }
+        Node* curNode = head->next;
+        for(int i = 0; i < size; i++) {
+            cout << curNode->data << " ";
+            curNode = curNode->next;
+        }
+        cout << "\n";
     }
 };
 
 int main() {
-    int t, n,m,k; string name,command;
+    int t,n,m,k;
     cin >> t;
     while(t--) {
-        LinkedList l;
+        doubly l;
+        string name,command;
         cin >> n >> m >> k;
         while(n--) {
             cin >> name;
