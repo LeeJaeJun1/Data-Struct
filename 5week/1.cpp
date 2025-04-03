@@ -1,112 +1,103 @@
 #include<iostream>
-#include<string>
 using namespace std;
 
-class node{
-    node* next;
-    node* prev;
+class Node{
+public:
     int data;
+    Node* next;
+    Node* prev;
 
-    node(int x) {
-        data = x;
+    Node(int x) {
+        this->data = x;
         next = prev = NULL;
     }
-    friend class LinkedList;
 };
 
-class LinkedList {
+class doubly{
 private:
-    node* header;
-    node* trailer;
     int size;
+    Node* head;
+    Node* tail;
 public:
-    LinkedList() {
-        header = new node(0);
-        trailer = new node(0);
+    doubly() {
+        head = new Node(0);
+        tail = new Node(0);
+        head->next = tail;
+        tail->prev = head;
         size = 0;
-        header->next = trailer;
-        trailer->prev = header;
-        header->prev = trailer->next = NULL;
     }
     bool empty() {
-        if(size == 0) {
-            return true;
-        }
-        return false;
+        return size==0;
     }
-
-    void insert(int i, int x) {
-        if(i<0 || i> size) {
-            cout << "out_of_range" << endl;
+    void insert(int idx, int x) {
+        if(idx < 0 || idx > size) {
+            cout << "out_of_range" << "\n";
             return;
         }
-        node* curNode = header->next;
-        for(int j = 0; j < i; j++) {
+        Node* newNode = new Node(x);
+        Node* curNode = head->next;
+        for(int i = 0; i < idx; i++) {
             curNode = curNode->next;
         }
-        node* newNode = new node(x);
         newNode->next = curNode;
         newNode->prev = curNode->prev;
         curNode->prev->next = newNode;
         curNode->prev = newNode;
         size++;
     }
-
-    void erase(int i) {
-        if(i < 0 || i >= size) {
-            cout << "out_of_range" << endl;
+    void erase(int idx) {
+        if(idx < 0 || idx >= size) {
+            cout << "out_of_range" << "\n";
             return;
         }
-        node* curNode = header->next;
-        for(int j = 0; j < i; j++) {
-            curNode = curNode->next;
+        Node* delNode = head->next;
+        for(int i = 0; i < idx; i++) {
+            delNode = delNode->next;
         }
-        curNode->prev->next = curNode->next;
-        curNode->next->prev = curNode->prev;
-        delete curNode;
+        delNode->prev->next = delNode->next;
+        delNode->next->prev = delNode->prev;
+        delete delNode;
         size--;
     }
-
     void find(int x) {
-        node* curNode = header->next;
+
+        Node* curNode = head->next;
         for(int i = 0; i < size; i++) {
             if(curNode->data == x) {
-                cout << i << endl;
+                cout << i << "\n";
                 return;
             }
             curNode = curNode->next;
         }
-        cout << "not_found" << endl;
+        cout << "not_found\n";
     }
-
     void print(int m) {
         if(empty()) {
-            cout << "empty" << endl;
+            cout << "empty\n";
             return;
         }
-
         if(m==0) {
-            node* curNode = header->next;
+            Node* curNode = head->next;
             for(int i = 0; i < size; i++) {
                 cout << curNode->data << " ";
-                curNode = curNode->next;
+                curNode= curNode->next;
             }
-            cout << endl;
+            cout << "\n";
         }
         else if(m==1) {
-            node* curNode = trailer->prev;
+            Node* curNode = tail->prev;
             for(int i = 0; i < size; i++) {
                 cout << curNode->data << " ";
                 curNode = curNode->prev;
             }
-            cout << endl;
+            cout << "\n";
         }
     }
 };
 
 int main() {
     int n; string s;
-    LinkedList l;
+    doubly l;
     cin >> n;
     while(n--) {
         cin >> s;
