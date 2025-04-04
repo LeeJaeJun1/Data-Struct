@@ -1,28 +1,27 @@
 #include<iostream>
 using namespace std;
 
-class Node{
+class node{
 public:
     string data;
-    Node* next;
-    Node* prev;
-
-    Node(string x) {
-        this->data = x;
-        next = prev = NULL;
+    node* prev;
+    node* next;
+    node(string s) {
+        this->data = s;
+        prev = next = NULL;
     }
 };
 
-class doubly{
-private:
-    int size;
-    Node* head;
-    Node* tail;
-    Node* position;
+class Sequence {
 public:
-    doubly() {
-        head = new Node(" ");
-        tail = new Node(" ");
+    int size;
+    node* head;
+    node* tail;
+    node* position;
+
+    Sequence() {
+        head = new node(" ");
+        tail = new node(" ");
         head->next = tail;
         tail->prev = head;
         head->prev = tail->next = NULL;
@@ -35,8 +34,8 @@ public:
         if(empty()) {
             return;
         }
-        for(int i = 0; i < x; i++) {
-            if(position==head->next) {
+        for(int i = 0; i  < x; i++) {
+            if(position == head->next) {
                 break;
             }
             position = position->prev;
@@ -46,8 +45,8 @@ public:
         if(empty()) {
             return;
         }
-        for(int i = 0; i < x; i++) {
-            if(position==tail->prev) {
+        for(int i= 0; i < x; i++) {
+            if(position == tail->prev) {
                 break;
             }
             position = position->next;
@@ -57,11 +56,11 @@ public:
         if(empty()) {
             return;
         }
-        Node* delNode = position;
+        node* delNode = position;
         if(position==tail) {
             position = delNode->prev;
         }
-        else{
+        else {
             position = delNode->next;
         }
         delNode->prev->next = delNode->next;
@@ -70,32 +69,32 @@ public:
         size--;
     }
     void append(string name) {
-        Node* newNode = new Node(name);
+        node* newNode = new node(name);
         if(size==0) {
             newNode->next = tail;
             newNode->prev = head;
             head->next = newNode;
             tail->prev = head;
         }
-        else{
+        else {
             newNode->next = position->next;
             position->next->prev = newNode;
-            newNode->prev = position;
             position->next = newNode;
+            newNode->prev = position;
         }
         position = newNode;
         size++;
     }
-    void position_set(int x) {
+    void position_set(int m) {
         position = head->next;
-        down(x);
+        down(m);
     }
     void print() {
         if(empty()) {
             cout << "And Then Were None\n";
             return;
         }
-        Node* curNode = head->next;
+        node* curNode = head->next;
         for(int i = 0; i < size; i++) {
             cout << curNode->data << " ";
             curNode = curNode->next;
@@ -108,7 +107,7 @@ int main() {
     int t,n,m,k;
     cin >> t;
     while(t--) {
-        doubly l;
+        Sequence l;
         string name,command;
         cin >> n >> m >> k;
         while(n--) {
