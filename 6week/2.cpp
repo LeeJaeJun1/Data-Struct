@@ -1,155 +1,150 @@
 #include<iostream>
-#include<string>
 #include<vector>
 using namespace std;
 
-struct node{
-    int data;
-    int depth;
+class node{
+public:
     node* parent;
     vector<node*> childList;
-    node(int data, node* parent) {
-        this->data = data;
+    int value;
+    int depth;
+
+    node(node* parent, int value, int depth) {
         this->parent = parent;
-        this->depth = parent->depth + 1;
-    }
-    node(int data, int depth) {
-        this->data = data;
+        this->value = value;
         this->depth = depth;
-        this->parent = NULL;
     }
 };
 
 class Tree {
-private:
+public:
     node* root;
     vector<node*> nodeList;
-    int find(int data, vector<node*>& list) {
-        for (int i = 0; i < list.size(); i++) {
-            if (list[i]->data == data)
-                return i;
-        }
-        return -1;
-    }
-public:
+
     Tree() {
-        root = new node(1,0);
+        root = new node(nullptr, 1, 0);
         nodeList.push_back(root);
     }
 
-    void insertNode(int x, int y) {
-        int pindex = find(x,nodeList);
-        if(pindex == -1 || find(y,nodeList) != -1) {
-            cout << -1 << endl;
+    node* find(int x) {
+        for(auto n : nodeList) {
+            if(n->value == x) {
+                return n;
+            }
+        }
+        return nullptr;
+    }
+
+    void insert(int x, int y) {
+        node* par = find(x);
+        if(par == nullptr || find(y) != nullptr) {
+            cout << -1 << "\n";
             return;
         }
-        node* parent = nodeList[pindex];
-        node* newNode = new node(y, parent);
-        parent->childList.push_back(newNode);
+        node* newNode = new node(par, y, par->depth+1);
+        par->childList.push_back(newNode);
         nodeList.push_back(newNode);
     }
 
-    void deleteNode(int x) {
-        int index = find(x,nodeList);
-        if(index == -1) {
-            cout << -1 << endl;
+    void Delete(int x) {
+        node* delNode = find(x);
+        if(delNode == nullptr) {
+            cout << -1 << "\n";
             return;
         }
-        node* del = nodeList[index];
-        vector<node*>& par_child = del->parent->childList;
-        for(auto i : del->childList) {
-            par_child.push_back(i);
-            i->parent = del->parent;
+        for(auto n : delNode->childList) {
+            n->parent = delNode->parent;
+            delNode->parent->childList.push_back(n);
         }
-        for(int i = 0; i < par_child.size(); i++) {
-            if(par_child[i] == del) {
-                par_child.erase(par_child.begin()+i);
+
+        for(int i = 0; i < delNode->parent->childList.size(); i++) {
+            if(delNode->parent->childList[i] == delNode) {
+                delNode->parent->childList.erase(delNode->parent->childList.begin() + i);
                 break;
             }
         }
+
         for(int i = 0; i < nodeList.size(); i++) {
-            if(nodeList[i] == del) {
+            if(nodeList[i]->value == x) {
                 nodeList.erase(nodeList.begin() + i);
                 break;
             }
         }
-        delete del;
-    }
-    void Parent(int x) {
-        int index = find(x,nodeList);
-        if(index <= 0) {
-            cout << -1 << endl;
-            return;
-        }
-        node* childNode = nodeList[index];
-        cout << childNode->parent->data << endl;
-    }
-    void Child(int x) {
-        int index = find(x, nodeList);
-        if(index == -1 || nodeList[index]->childList.empty()) {
-            cout << -1 << endl;
-            return;
-        }
-        node* printNode = nodeList[index];
-        for(auto i : printNode->childList) {
-            cout << i->data << " ";
-        }
-        cout << endl;
-    }
-    void min_maxChild(int x) {
-        int index = find(x,nodeList);
-        if(index == -1 || nodeList[index]->childList.empty()) {
-            cout << -1 << endl;
-            return;
-        }
-        node* parentNode = nodeList[index];
-        if(parentNode->childList.size() == 1) {
-            cout << parentNode->childList[0]->data << endl;
-        }
-        else{
-            int max = 1; int min = 10000;
-            for(auto i : parentNode->childList) {
-                if(i->data > max) {
-                    max = i->data;
-                }
-                if(i->data < min) {
-                    min = i->data;
-                }
-            }
-            cout << max + min << endl;
-        }
     }
 
-    void diff(int x, int y) {
-        int inx = find(x,nodeList);
-        int iny = find(y,nodeList);
-        if(inx == -1 || iny == -1) {
-            cout << "error" << endl;
+    void parent(int x) {
+        node* cur = find(x);
+        if(cur == nullptr) {
+            cout << -1 << "\n";
             return;
         }
-        node* nodex = nodeList[inx];
-        node* nodey = nodeList[iny];
-        cout << nodex->depth << " " << nodey->depth << " ";
-        int result = nodex->depth - nodey->depth;
-        if(result > 0) {
-            cout << result << endl;
+        cout << cur->parent->value << "\n";
+    }
+
+    void child(int x) {
+        node* ch = find(x);
+        if(ch == nullptr || ch->childList.size() == 0) {
+            cout << -1 << "\n";
+            return;
         }
-        else
-            cout << -result << endl;
+        for(auto n : ch->childList) {
+            cout << n->value << " ";
+        }
+        cout << "\n";
+    }
+
+    void min_maxChild(int x) {
+        node* cur = find(x);
+        if(cur == nullptr || cur->childList.size() == 0) {
+            cout << -1 << "\n";
+            return;
+        }
+        else if(cur->childList.size()==1) {
+            cout << cur->childList[0]->value << "\n";
+        }
+        else {
+            int min = 10001;
+            int max = 0;
+            for (auto n: cur->childList) {
+                if (n->value > max) {
+                    max = n->value;
+                }
+                if (n->value < min) {
+                    min = n->value;
+                }
+            }
+            cout << max + min << "\n";
+        }
     }
 };
 
 int main() {
-    int N, M;
-    int parent,child;
-    Tree tree;
-    cin >> N >> M;
-    while(N--) {
-        cin >> parent >> child;
-        tree.insertNode(parent,child);
+    int n,m;
+    Tree tr;
+
+    cin >> n >> m;
+    while(n--) {
+        int par,chi;
+        cin >> par >> chi;
+        tr.insert(par,chi);
     }
-    while(M--) {
-        cin >> parent >> child;
-        tree.diff(parent,child);
+    while(m--) {
+        int left, right;
+        cin >> left >> right;
+
+        node* leftNode = tr.find(left);
+        node* rightNode = tr.find(right);
+
+        if(leftNode == nullptr || rightNode == nullptr) {
+            cout << "error\n";
+        }
+        else {
+            if(leftNode->value - rightNode->value < 0) {
+                cout << leftNode->depth << " " << rightNode->depth << " " << -(leftNode->depth - rightNode->depth) << "\n";
+            }
+            else {
+                cout << leftNode->depth << " " << rightNode->depth << " " << (leftNode->depth - rightNode->depth) << "\n";
+            }
+        }
     }
 }
