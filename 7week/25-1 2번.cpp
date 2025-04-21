@@ -183,7 +183,8 @@ public:
 };
 
 int main() {
-    int test;
+
+     int test;
     cin >> test;
     string comm;
     BinaryTree tree;
