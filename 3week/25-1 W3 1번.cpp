@@ -1,86 +1,60 @@
 #include<iostream>
 using namespace std;
 
-class arrayStack{
-private:
+class ArrayStack {
+public:
     int capacity;
     int topIndex;
     int* arr;
-public:
-    arrayStack() {
-        capacity = 100000;
+
+    ArrayStack() {
         topIndex = -1;
+        capacity = 100000;
         arr = new int[capacity];
     }
+
+    bool empty() {
+        return topIndex == -1;
+    };
+
     int size() {
         return topIndex+1;
-    };
-    bool empty() {
-        return topIndex==-1;
     }
-    int top() {
+
+    void top() {
         if(empty()) {
-            return -1;
+            cout << "-1\n";
+            return;
         }
-        return arr[topIndex];
+        cout << arr[topIndex] << "\n";
     }
-    void push(int x) {
+
+    void push(char x) {
         arr[topIndex+=1] = x;
     }
+
     void pop() {
         if(empty()) {
-            cout << -1 << "\n";
+            cout << "-1\n";
             return;
         }
-        cout << top() << "\n";
+        cout << arr[topIndex] << "\n";
         topIndex--;
     }
+
     void pop_all() {
         if(empty()) {
-            cout << -1 << "\n";
+            cout << "-1\n";
             return;
         }
-
-        while(!empty()) {
-            cout << top() << " ";
-            topIndex--;
+        for(int i = 0; i <= topIndex; i++) {
+            cout << arr[topIndex - i] << " ";
         }
         cout << "\n";
+        topIndex=-1;
     }
 };
 
 int main() {
-    int t,q; string s;
-    cin >> t;
-    while(t--) {
-        arrayStack sta;
-        cin >> q;
-        while(q--) {
-            cin >> s;
-            if(s=="size") {
-                cout << sta.size() << "\n";
-            }
-            else if(s=="empty") {
-                if(sta.empty()) {
-                    cout << 1 << "\n";
-                }
-                else{
-                    cout << 0 << "\n";
-                }
-            }
-            else if(s=="top") {
-                cout << sta.top() << "\n";
-            }
-            else if(s=="push") {
-                int x; cin >> x;
-                sta.push(x);
-            }
-            else if(s=="pop") {
-                sta.pop();
-            }
-            else if(s=="pop_all") {
-                sta.pop_all();
-            }
-        }
-    }
+    int com;
 }
