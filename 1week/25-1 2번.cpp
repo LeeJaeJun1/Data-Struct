@@ -2,61 +2,54 @@
 using namespace std;
 
 class Array {
-private:
-    int* arr;
-    int arraySize;
-
 public:
-    Array(int s) {
-        this->arraySize = s;
-        this->arr = new int[arraySize];
-        for(int i = 0; i < arraySize; i++) {
+    int size;
+    int* arr;
+    Array(int size) {
+        this->size = size;
+        arr = new int[size];
+        for(int i = 1; i <= size; i++) {
             arr[i] = 0;
         }
     }
 
-    int at(int i) {
-        return arr[i];
-    }
-
-    void insert(int a, int b) {
-        for(int i = arraySize-1; i > a; i--) {
-            arr[i] = arr[i-1];
-        }
-        arr[a] = b;
+    void insert(int idx,int value) {
+        arr[idx] = value;
     }
 
     void print() {
-        for(int i = 0; i < arraySize; i++) {
+        for(int i = 1; i <= size; i++) {
             cout << arr[i] << " ";
         }
-        cout << endl;
+        cout << "\n";
     }
 
-    void change(int a, int b) {
-        if(a > 0) {
-            arr[a-1] = b;
+    void change(int idx, int value) {
+        if(idx > 0) {
+            // 배열의 가장 왼쪽 인덱스 1로 시작
+            arr[idx] = value;
         }
-        else{
-            arr[(a + arraySize)] = b;
+        if(idx < 0) {
+            int index = idx+size+1;
+            arr[index] = value;
         }
     }
 };
 
 int main() {
-    int T,N,Q,a,b,num;
-    cin >> T;
-    while(T--) {
+    int test,N,Q,x,idx;
+    cin >> test;
+    while(test--) {
         cin >> N >> Q;
-        Array A(N);
-        for(int i = 0; i < N; i++) {
-            cin >> num;
-            A.insert(i,num);
+        Array a(N);
+        for(int i = 1; i <= N; i++) {
+            cin >> x;
+            a.insert(i,x);
         }
         while(Q--) {
-            cin >> a >> b;
-            A.change(a,b);
+            cin >> idx >> x;
+            a.change(idx,x);
         }
-        A.print();
+        a.print();
     }
 }
