@@ -5,26 +5,13 @@ using namespace std;
 
 struct Compare {
     bool operator()(int lhs, int rhs) {
-        return lhs < rhs;
+        return lhs > rhs;
     }
 };
 
 class HeapPQ {
 public:
     int rootIdx = 1;
-    bool compare(int a, int b) {
-        // 홀수인 책이 짝수인 책보다 우선순위 높다.
-        // 홀수인 책 중에서는 번호가 큰 수, 짝수인 책에서는 번호가 작은 수
-
-        if(a % 2 != b % 2) {
-            return a % 2 > b % 2;
-        }
-        if(a % 2 == 1) {
-            return a > b;
-        }
-        return a < b;
-
-    }
 
     void swap(int idx1, int idx2) {
         int tmp = elements[idx1];
@@ -98,7 +85,7 @@ public:
 
     void pop() {
         if(empty()) {
-            cout << "-1\n";
+            cout << "0\n";
             return;
         }
         cout << elements[1] << "\n";
@@ -106,69 +93,22 @@ public:
         elements.pop_back();
         downHeap(1);
     }
-    void second_top() {
-        if(size() < 2) {
-            cout << "Error\n";
-            return;
-        }
-        else if(size()==2) {
-            cout << elements[rootIdx + 1] << "\n";
-            return;
-        }
-        else  {
-            int left = 2 * rootIdx;
-            int right = 2 * rootIdx + 1;
 
-            if(comp(elements[left],elements[right])) {
-                cout << elements[left] << "\n";
-            }
-            else {
-                cout << elements[right] << "\n";
-            }
-        }
-    }
-    void print() {
-        for(int i = 1; i <= size(); i++) {
-            cout << elements[i] << " ";
-        }
-        cout << "\n";
-    }
 };
 
 int main() {
-    int len;
-    cin >> len;
-    string comm;
+    ios::sync_with_stdio(0);
+    cin.tie(0);
+    int test,num;
+    cin >> test;
     HeapPQ pq;
-    while(len--) {
-        cin >> comm;
-        if(comm=="empty") {
-            if(pq.empty()) {
-                cout << "1\n";
-            }
-            else {
-                cout << "0\n";
-            }
-        }
-        if(comm=="size") {
-            cout << pq.size() << "\n";
-        }
-        if(comm=="push") {
-            int idx;
-            cin >> idx;
-            pq.push(idx);
-        }
-        if(comm=="pop") {
+    while(test--) {
+        cin >> num;
+        if(num == 0) {
             pq.pop();
         }
-        if(comm=="top") {
-            cout << pq.top() << "\n";
-        }
-        if(comm=="second_top") {
-            pq.second_top();
-        }
-        if(comm=="print") {
-            pq.print();
+        if(num > 0) {
+            pq.push(num);
         }
     }
 }
