@@ -15,9 +15,9 @@ int digit(int a) {
 struct Compare {
     bool operator()(int lhs, int rhs) {
         if(digit(lhs) != digit(rhs)) {
-            return digit(lhs) > digit(rhs);
+            return digit(lhs) < digit(rhs);
         }
-        return lhs < rhs;
+        return lhs > rhs;
     }
 };
 
