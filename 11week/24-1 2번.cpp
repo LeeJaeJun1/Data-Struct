@@ -2,8 +2,7 @@
 #include<string>
 using namespace std;
 
-int Itotal = 0;
-int Stotal = 1;
+int arr1[10001];
 
 class Node {
 public:
@@ -21,19 +20,19 @@ public:
 
 class BSTMap {
 public:
+    int idx;
+
+
     Node* find_entry(int key) {
         Node* cur_Node = root;
-
         while(cur_Node != nullptr) {
             if(key == cur_Node->key) {
                 return cur_Node;
             }
             if(key < cur_Node->key) {
-                Stotal++;
                 cur_Node = cur_Node->left;
             }
             else {
-                Stotal++;
                 cur_Node = cur_Node->right;
             }
         }
@@ -159,22 +158,18 @@ public:
             parent_node = cur_node; // 부모노드 저장
 
             if(key < cur_node->key) {
-                Itotal++;
                 cur_node = cur_node->left;
             }
             else {
-                Itotal++;
                 cur_node = cur_node->right;
             }
         }
 
         Node* new_node = new Node(key, value, parent_node);
-        if(key < parent_node->key) {// 새로운 노드 키 부모 키보다 작으면
-
+        if(key < parent_node->key) { // 새로운 노드 키 부모 키보다 작으면
             parent_node->left = new_node;
         }
         else {
-
             parent_node->right = new_node;
         }
         ++N;
@@ -185,64 +180,44 @@ public:
         return erase(find_entry(key));
     }
 
-    void Parent(int x) {
-        Node* par = find_entry(x);
-        if(par== nullptr) {
-            cout << "-1\n";
+    void inorder_traversal(Node* node) {
+        if(node == nullptr) {
             return;
         }
-        if(par->parent == nullptr) {
-            cout << "-2\n";
-            return;
-        }
-        cout << par->parent << "\n";
+        inorder_traversal(node->left);
+
+        arr1[idx++] = node->key;
+
+        inorder_traversal(node->right);
     }
 
-    void Child(int x) {
-        Node* par = find_entry(x);
-        if(par== nullptr) {
-            cout << "-1\n";
-            return;
-        }
-        if(par->left == nullptr) {
-            cout << "-2\n";
-            return;
-        }
-        cout << par->left->key << "\n";
+    int Max(int k) {
+        idx = 0;
+        inorder_traversal(root);
+        return arr1[idx - k];
     }
+
 };
 
 int main() {
-    int test, num,x; string comm,location;
+    int test, num, x; string comm, loc;
     cin >> test;
     while(test--) {
         BSTMap map;
         cin >> num;
-
         while(num--) {
             cin >> comm;
             if(comm=="insert") {
-                cin >> x >> location;
-                map.insert(x,location);
-                cout << Itotal << "\n";
-                Itotal = 0;
+                cin >> x >> loc;
+                map.insert(x,loc);
             }
-            if(comm=="search") {
+            if(comm=="delete") {
                 cin >> x;
-                map.find_entry(x);
-                if(map.empty()) {
-                    cout << "empty\n";
-                }
-                cout << Stotal << "\n";
-                Stotal = 0;
+                map.erase(x);
             }
-            if(comm=="parent") {
+            if(comm=="max") {
                 cin >> x;
-                map.Parent(x);
-            }
-            if(comm=="child") {
-                cin >> x;
-                map.Child(x);
+                cout << map.Max(x) << "\n";
             }
         }
     }
