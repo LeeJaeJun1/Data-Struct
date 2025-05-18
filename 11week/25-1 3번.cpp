@@ -1,39 +1,41 @@
+
 #include<iostream>
 #include<string>
 using namespace std;
 
-int Itotal = 0;
-int Stotal = 1;
-
+int arr1[100001];
+int total = 0;
 class Node {
 public:
     int key;
-    string value;
+    int value;
     Node* parent;
     Node* left;
     Node* right;
 
-    explicit Node(int key, string& value, Node* parent)
-            : key(key), value(value), parent(parent), left(nullptr),right(nullptr) {}
+    explicit Node(int key, int value, Node* parent)
+            : key(key), value(value), parent(parent), left(nullptr), right(nullptr) {}
 
     friend class BSTMap;
 };
 
 class BSTMap {
 public:
+    int idx;
+
     Node* find_entry(int key) {
         Node* cur_Node = root;
 
-        while(cur_Node != nullptr) {
-            if(key == cur_Node->key) {
+        while (cur_Node != nullptr) {
+            if (key == cur_Node->key) {
                 return cur_Node;
             }
-            if(key < cur_Node->key) {
-                Stotal++;
+            if (key < cur_Node->key) {
+
                 cur_Node = cur_Node->left;
             }
             else {
-                Stotal++;
+
                 cur_Node = cur_Node->right;
             }
         }
@@ -41,16 +43,16 @@ public:
     }
 
     Node* get_successor(Node* node) {
-        if(node->right) {
+        if (node->right) {
             Node* curr = node->right;
-            while(curr->left) {
+            while (curr->left) {
                 curr = curr->left;
             }
             return curr;
         }
         Node* curr = node;
         Node* parent = node->parent;
-        while(parent && curr == parent->right) {
+        while (parent && curr == parent->right) {
             curr = parent;
             parent = parent->parent;
         }
@@ -58,11 +60,11 @@ public:
     }
 
     bool erase(Node* node) {
-        if(node == nullptr) { // 삭제할 노드 존재하는지
+        if (node == nullptr) { // 삭제할 노드 존재하는지
             return false;
         }
 
-        if(node->left != nullptr && node->right != nullptr) { // 삭제할 노드에 두 자식이 모두 존재
+        if (node->left != nullptr && node->right != nullptr) { // 삭제할 노드에 두 자식이 모두 존재
             Node* successor = get_successor(node); // 후행자의 key, value값을 삭제할 노드에 복사시킨다.
             node->key = successor->key;
             node->value = successor->value;
@@ -70,14 +72,14 @@ public:
         }
 
         Node* child_node; // 삭제할 노드의 자식 1개 혹은 0개
-        if(node->left != nullptr) {
+        if (node->left != nullptr) {
             child_node = node->left;
         }
         else {
             child_node = node->right;
         }
 
-        if(node==root) {
+        if (node == root) {
             root = child_node; // 자식 노드 루트로 변경
             if (child_node != nullptr) {
                 child_node->parent = nullptr; // 부모 포인터 초기화
@@ -85,10 +87,10 @@ public:
         }
         else {
             Node* parent_node = node->parent;
-            if(child_node != nullptr) { // 부모 연결 갱신
+            if (child_node != nullptr) { // 부모 연결 갱신
                 child_node->parent = parent_node;
             }
-            if(node==parent_node->left) { // 자식 연결 갱신
+            if (node == parent_node->left) { // 자식 연결 갱신
                 parent_node->left = child_node;
             }
             else {
@@ -102,10 +104,10 @@ public:
     }
 
     void clear(Node* node) {
-        if(node->left != nullptr) {
+        if (node->left != nullptr) {
             clear(node->left);
         }
-        if(node->right != nullptr) {
+        if (node->right != nullptr) {
             clear(node->right);
         }
         delete node;
@@ -120,7 +122,7 @@ public:
     }
 
     ~BSTMap() {
-        if(!empty()) {
+        if (!empty()) {
             clear(root);
         }
     }
@@ -133,16 +135,16 @@ public:
         return size() == 0;
     }
 
-    string find(int key) {
+    int find(int key) {
         Node* node = find_entry(key);
-        if(node== nullptr) {
-            return "";
+        if (node == nullptr) {
+            return 0;
         }
         return node->value;
     }
 
-    bool insert(int key, string value) {
-        if(empty()) {
+    bool insert(int key, int value) { // 키가 상품번호, 값이 재고 수량
+        if (empty()) {
             root = new Node(key, value, nullptr);
             ++N;
             return true;
@@ -151,25 +153,25 @@ public:
         Node* cur_node = root;
         Node* parent_node = nullptr;
 
-        while(cur_node != nullptr) {
-            if(key == cur_node->key) { // 이미 해당 key 가지는 엔트리 존재
+        while (cur_node != nullptr) {
+            if (key == cur_node->key) { // 이미 해당 key 가지는 엔트리 존재
                 return false;
             }
 
             parent_node = cur_node; // 부모노드 저장
 
-            if(key < cur_node->key) {
-                Itotal++;
+            if (key < cur_node->key) {
+
                 cur_node = cur_node->left;
             }
             else {
-                Itotal++;
+
                 cur_node = cur_node->right;
             }
         }
 
         Node* new_node = new Node(key, value, parent_node);
-        if(key < parent_node->key) {// 새로운 노드 키 부모 키보다 작으면
+        if (key < parent_node->key) {// 새로운 노드 키 부모 키보다 작으면
 
             parent_node->left = new_node;
         }
@@ -185,37 +187,14 @@ public:
         return erase(find_entry(key));
     }
 
-    void Parent(int x) {
-        Node* par = find_entry(x);
-        if(par== nullptr) {
-            cout << "-1\n";
-            return;
-        }
-        if(par->parent == nullptr) {
-            cout << "-2\n";
-            return;
-        }
-        cout << par->parent << "\n";
-    }
 
-    void Child(int x) {
-        Node* par = find_entry(x);
-        if(par== nullptr) {
-            cout << "-1\n";
-            return;
-        }
-        if(par->left == nullptr) {
-            cout << "-2\n";
-            return;
-        }
-        cout << par->left->key << "\n";
-    }
 
     int get_height(Node* node) {
-        if (node == nullptr) return -1; // 빈 서브트리의 높이는 -1 (정의에 따라 0으로 설정해도 됨)
-        int left_height = get_height(node->left);
-        int right_height = get_height(node->right);
-        return 1 + max(left_height, right_height);
+        if (node == nullptr) return -1;// 빈 서브트리의 높이는 -1 (정의에 따라 0으로 설정해도 됨)
+        total++;
+        get_height(node->left);
+        get_height(node->right);
+        return total;
     }
 
     void Height(int key) {
@@ -228,40 +207,64 @@ public:
     }
 
 
+
+    void inorder(Node* node) {
+        if(!node) {
+            return;
+        }
+
+        inorder(node->left);
+        arr1[idx++] = node->key;
+        inorder(node->right);
+    }
+
+    void Next(int k, int s) {
+        Node* node = find_entry(k);
+        Node* f = get_successor(node);
+        int count = 1;
+        while(f && count < s) {
+            count++;
+            f = get_successor(f);
+        }
+        if(f) {
+            cout << f->key << "\n";
+        }
+        else {
+            cout << "-2\n";
+        }
+    }
 };
 
 int main() {
-    int test, num,x; string comm,location;
+    int test,x,s,loc; string comm;
     cin >> test;
-    while(test--) {
-        BSTMap map;
-        cin >> num;
+    BSTMap map;
 
-        while(num--) {
-            cin >> comm;
-            if(comm=="insert") {
-                cin >> x >> location;
-                map.insert(x,location);
-                cout << Itotal << "\n";
-                Itotal = 0;
-            }
-            if(comm=="search") {
-                cin >> x;
-                map.find_entry(x);
-                if(map.empty()) {
-                    cout << "empty\n";
-                }
-                cout << Stotal << "\n";
-                Stotal = 0;
-            }
-            if(comm=="parent") {
-                cin >> x;
-                map.Parent(x);
-            }
-            if(comm=="child") {
-                cin >> x;
-                map.Child(x);
-            }
+    while (test--) {
+        cin >> comm;
+        if (comm == "Insert") {
+            cin >> x >> loc;
+            map.insert(x, loc);
+
+        }
+        if (comm == "Find") {
+            cin >> x;
+            cout << map.find(x) << "\n";
+
+        }
+        if (comm == "Erase") {
+            cin >> x;
+            map.erase(x);
+        }
+        if (comm == "SubtreeSize") {
+            cin >> x;
+            map.Height(x);
+            total = 0;
+        }
+        if (comm == "Next") {
+            cin >> x >> s;
+            map.Next(x, s);
         }
     }
+
 }
